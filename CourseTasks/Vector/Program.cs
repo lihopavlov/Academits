@@ -11,6 +11,7 @@ namespace Vector
         static void Main(string[] args)
         {
             Console.WriteLine("Hello world!");
+            Console.WriteLine("Hi, man!");
         }
     }
 }
