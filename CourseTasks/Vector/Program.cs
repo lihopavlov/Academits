@@ -18,6 +18,7 @@ namespace Vector
             Range range6 = new Range(11.0, 15.0);
             Range range7 = new Range(10.0, 15.0);
             Range range8 = new Range(2.0, 3.0);
+            Range range9 = new Range(3.0, 10.0);
 
             Range.ShowIntersection(range1, range2);
             Range.ShowIntersection(range1, range3);
@@ -41,6 +42,7 @@ namespace Vector
             Range.ShowDifference(range1, range6);
             Range.ShowDifference(range1, range7);
             Range.ShowDifference(range1, range8);
+            Range.ShowDifference(range1, range9);
             Console.WriteLine();
 
         }
