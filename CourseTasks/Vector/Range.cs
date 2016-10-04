@@ -8,25 +8,23 @@ namespace Vector
 {
     class Range
     {
-        private double beginRange;
-        private double endRange;
         
         public Range()
         {
-            beginRange = 0.0;
-            endRange = 0.0;
+            BeginRange = 0.0;
+            EndRange = 0.0;
         }
 
-        public Range(double beginRange, double endRange)
+        public Range(double BeginRange, double EndRange)
         {
-            this.beginRange = Math.Min(beginRange, endRange);
-            this.endRange = Math.Max(beginRange, endRange);
+            this.BeginRange = Math.Min(BeginRange, EndRange);
+            this.EndRange = Math.Max(BeginRange, EndRange);
         }
 
         public Range(Range range)
         {
-            beginRange = range.BeginRange;
-            endRange = range.EndRange;
+            BeginRange = range.BeginRange;
+            EndRange = range.EndRange;
         }
 
         private static bool IsDoubleEquals(double arg1, double arg2)
@@ -39,58 +37,40 @@ namespace Vector
         {
             get
             {
-                return endRange - beginRange;
+                return EndRange - BeginRange;
             }
         }
 
         public double BeginRange
         {
-            get
-            {
-                return beginRange;
-            }
+            get;
         }
 
         public double EndRange
         {
-            get
-            {
-                return endRange;
-            }
+            get;
         }
 
         public Range[] GetDifference(Range range)
         {
             if (IsDoubleEquals(range.BeginRange, BeginRange) && IsDoubleEquals(range.EndRange, EndRange))
             {
-                return null;
+                return new Range[0];
             }
 
             Range intersectionRange = GetIntersection(range);
             if (intersectionRange == null)
             {
-                Range[] differenceRange = new Range[1];
-                differenceRange[0] = new Range(this);
-                return differenceRange;
+                return new Range[] { new Range(this) };
             }
-            else
+
+            if (!IsDoubleEquals(intersectionRange.BeginRange, intersectionRange.EndRange)) 
             {
-                if (!IsDoubleEquals(intersectionRange.BeginRange, intersectionRange.EndRange)) 
-                {
-                    Range[] differenceRange = new Range[2];
-                    differenceRange[0] = new Range(Math.Min(BeginRange, range.BeginRange), intersectionRange.BeginRange);
-                    differenceRange[1] = new Range(intersectionRange.EndRange, Math.Max(EndRange, range.EndRange));
-                    return differenceRange;
-                }
-                else
-                {
-                    Range[] differenceRange = new Range[1];
-                    differenceRange = new Range[1];
-                    differenceRange[0] = new Range(Math.Min(BeginRange, range.BeginRange), Math.Max(EndRange, range.EndRange));
-                    return differenceRange;
-                }
+                return new Range[] { new Range(Math.Min(BeginRange, range.BeginRange), intersectionRange.BeginRange),
+                    new Range(intersectionRange.EndRange, Math.Max(EndRange, range.EndRange)) };
             }
-            
+
+            return new Range[] { new Range(Math.Min(BeginRange, range.BeginRange), Math.Max(EndRange, range.EndRange)) };
         }
 
         public static void ShowDifference(Range range1, Range range2)
@@ -98,18 +78,15 @@ namespace Vector
             Console.Write("Разность интервалов {0} - {1} и {2} - {3} равно ", range1.BeginRange, range1.EndRange,
             range2.BeginRange, range2.EndRange);
             Range[] differenceRange = range1.GetDifference(range2);
-            if (differenceRange == null)
+            if (differenceRange.Length == 0)
             {
                 Console.WriteLine("0");
                 return;
             }
-            if (differenceRange[0] != null)
+            Console.Write("{0} - {1}", differenceRange[0].BeginRange, differenceRange[0].EndRange);
+            if (differenceRange.Length > 1)
             {
-                Console.Write("{0} - {1}", differenceRange[0].BeginRange, differenceRange[0].EndRange);
-                if (differenceRange.Length > 1 && differenceRange[1] != null)
-                {
-                    Console.Write(", {0} - {1}", differenceRange[1].BeginRange, differenceRange[1].EndRange);
-                }
+                Console.Write(", {0} - {1}", differenceRange[1].BeginRange, differenceRange[1].EndRange);
             }
             Console.WriteLine();
         }
@@ -118,17 +95,9 @@ namespace Vector
         {
             if (GetIntersection(range) == null)
             {
-                Range[] unionRange = new Range[2];
-                unionRange[0] = new Range(this);
-                unionRange[1] = range;
-                return unionRange;
+                return new Range[] { new Range(this), range };
             }
-            else
-            {
-                Range[] unionRange = new Range[1];
-                unionRange[0] = new Range(Math.Min(range.BeginRange, BeginRange), Math.Max(range.EndRange, EndRange));
-                return unionRange;
-            }
+            return new Range[] { new Range(Math.Min(range.BeginRange, BeginRange), Math.Max(range.EndRange, EndRange)) };
         }
 
         public static void ShowUnion(Range range1, Range range2)
@@ -136,13 +105,10 @@ namespace Vector
             Console.Write("Объединение интервалов {0} - {1} и {2} - {3} равно ", range1.BeginRange, range1.EndRange,
                     range2.BeginRange, range2.EndRange);
             Range[] unionRange = range1.GetUnion(range2);
-            if (unionRange[0] != null)
+            Console.Write("{0} - {1}", unionRange[0].BeginRange, unionRange[0].EndRange);
+            if (unionRange.Length > 1)
             {
-                Console.Write("{0} - {1}", unionRange[0].BeginRange, unionRange[0].EndRange);
-                if (unionRange.Length > 1 && unionRange[1] != null)
-                {
-                    Console.Write(", {0} - {1}", unionRange[1].BeginRange, unionRange[1].EndRange);
-                }
+                Console.Write(", {0} - {1}", unionRange[1].BeginRange, unionRange[1].EndRange);
             }
             Console.WriteLine();
         }
@@ -154,10 +120,7 @@ namespace Vector
             {
                 return new Range(Math.Max(range.BeginRange, BeginRange), Math.Min(range.EndRange, EndRange));
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
         public static void ShowIntersection(Range range1, Range range2)
@@ -176,8 +139,8 @@ namespace Vector
 
         public bool IsInside(double position)
         {
-            return (position > beginRange && position < endRange ||
-                (IsDoubleEquals(position, beginRange) || IsDoubleEquals(position, endRange)));
+            return (position > BeginRange && position < EndRange ||
+                (IsDoubleEquals(position, BeginRange) || IsDoubleEquals(position, EndRange)));
         }
     }
 }
