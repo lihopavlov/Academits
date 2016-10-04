@@ -15,10 +15,10 @@ namespace Vector
             EndRange = 0.0;
         }
 
-        public Range(double BeginRange, double EndRange)
+        public Range(double beginRange, double endRange)
         {
-            this.BeginRange = Math.Min(BeginRange, EndRange);
-            this.EndRange = Math.Max(BeginRange, EndRange);
+            BeginRange = Math.Min(beginRange, endRange);
+            EndRange = Math.Max(beginRange, endRange);
         }
 
         public Range(Range range)
@@ -53,24 +53,25 @@ namespace Vector
 
         public Range[] GetDifference(Range range)
         {
-            if (IsDoubleEquals(range.BeginRange, BeginRange) && IsDoubleEquals(range.EndRange, EndRange))
+            if (range.IsInside(BeginRange) && range.IsInside(EndRange))
             {
                 return new Range[0];
             }
-
             Range intersectionRange = GetIntersection(range);
-            if (intersectionRange == null)
+            if (intersectionRange == null || IsDoubleEquals(intersectionRange.BeginRange, intersectionRange.EndRange))
             {
                 return new Range[] { new Range(this) };
             }
-
-            if (!IsDoubleEquals(intersectionRange.BeginRange, intersectionRange.EndRange)) 
+            if (IsInside(range.BeginRange) && !IsInside(range.EndRange))
             {
-                return new Range[] { new Range(Math.Min(BeginRange, range.BeginRange), intersectionRange.BeginRange),
-                    new Range(intersectionRange.EndRange, Math.Max(EndRange, range.EndRange)) };
+                return new Range[] { new Range(BeginRange, intersectionRange.BeginRange) };
             }
-
-            return new Range[] { new Range(Math.Min(BeginRange, range.BeginRange), Math.Max(EndRange, range.EndRange)) };
+            if (IsInside(range.EndRange) && !IsInside(range.BeginRange))
+            {
+                return new Range[] { new Range(intersectionRange.EndRange, EndRange) };
+            }
+            return new Range[] { new Range(BeginRange, intersectionRange.BeginRange),
+                new Range(intersectionRange.EndRange, EndRange) };
         }
 
         public static void ShowDifference(Range range1, Range range2)
@@ -95,7 +96,7 @@ namespace Vector
         {
             if (GetIntersection(range) == null)
             {
-                return new Range[] { new Range(this), range };
+                return new Range[] { new Range(this), new Range(range) };
             }
             return new Range[] { new Range(Math.Min(range.BeginRange, BeginRange), Math.Max(range.EndRange, EndRange)) };
         }
