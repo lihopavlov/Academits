@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ShapeTask.Comparers;
+using ShapeTask.Shapes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,15 +33,12 @@ namespace ShapeTask
         {
             const int secondMaxPerimeter = 2;
 
-            List<IShape> shapes = new List<IShape>();
-            shapes.Add(new Square(5.0));
-            shapes.Add(new Square(4.0));
-            shapes.Add(new Rectangle(2.0, 6.0));
-            shapes.Add(new Rectangle(3.0, 4.0));
-            shapes.Add(new Triangle(5.0, 1.0, 7.0, 4.0, 2.0, 5.0));
-            shapes.Add(new Triangle(5.0, 1.0, 8.0, 3.0, 2.5, 5.5));
-            shapes.Add(new Circle(5.0));
-            shapes.Add(new Circle(5.5));
+            List<IShape> shapes = new List<IShape>()
+            {
+                new Square(5.0), new Square(4.0), new Rectangle(2.0, 6.0),
+                new Rectangle(3.0, 4.0), new Triangle(5.0, 1.0, 7.0, 4.0, 2.0, 5.0),
+                new Triangle(5.0, 1.0, 8.0, 3.0, 2.5, 5.5), new Circle(5.0), new Circle(5.5)
+            };
 
             ShapeAreaComparer areaComparer = new ShapeAreaComparer();
             shapes.Sort(areaComparer);

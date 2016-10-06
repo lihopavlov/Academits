@@ -1,10 +1,11 @@
-﻿using System;
+﻿using ShapeTask.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShapeTask
+namespace ShapeTask.Shapes
 {
     class Circle : IShape
     {

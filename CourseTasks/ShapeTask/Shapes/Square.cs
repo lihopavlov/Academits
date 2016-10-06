@@ -1,10 +1,11 @@
-﻿using System;
+﻿using ShapeTask.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShapeTask
+namespace ShapeTask.Shapes
 {
     class Square : IShape
     {
@@ -13,8 +14,7 @@ namespace ShapeTask
 
         public Square(double sideLength)
         {
-            //Я правильно понял?
-            SideLength = Math.Max(SideLength, sideLength);
+            SideLength = Math.Max(0, sideLength);
         }
 
         public double SideLength
