@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ShapeTask
 {
-    class RealNumberUtils
+    static class RealNumberUtils
     {
         public static bool IsRealEquals(double arg1, double arg2)
         {

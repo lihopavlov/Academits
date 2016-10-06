@@ -6,24 +6,17 @@ using System.Threading.Tasks;
 
 namespace ShapeTask
 {
-    class Square : IShape
+    class Circle : IShape
     {
-        private const string shapeName = "КВАДРАТ";
-        private const int startHash = 14;
+        private const string shapeName = "КРУГ";
+        private const int startHash = 17;
 
-        public Square(double sideLength)
+        public Circle(double radius)
         {
-            if (sideLength >= 0)
-            {
-                SideLength = sideLength;
-            }
-            else
-            {
-                SideLength = 0.0;
-            }
+            Radius = radius;
         }
 
-        public double SideLength
+        public double Radius
         {
             get;
         }
@@ -32,7 +25,7 @@ namespace ShapeTask
         {
             get
             {
-                return SideLength;
+                return Radius * 2;
             }
         }
 
@@ -40,7 +33,7 @@ namespace ShapeTask
         {
             get
             {
-                return SideLength;
+                return Radius * 2;
             }
         }
 
@@ -48,7 +41,7 @@ namespace ShapeTask
         {
             get
             {
-                return Math.Pow(SideLength, 2);
+                return Math.PI * Math.Pow(Radius, 2);
             }
         }
 
@@ -56,7 +49,7 @@ namespace ShapeTask
         {
             get
             {
-                return 4 * SideLength;
+                return 2 * Math.PI * Radius;
             }
         }
 
@@ -70,7 +63,7 @@ namespace ShapeTask
         public override int GetHashCode()
         {
             int hash = startHash;
-            hash ^= SideLength.GetHashCode();
+            hash ^= Radius.GetHashCode();
             return hash ^ shapeName.GetHashCode();
         }
 
@@ -80,8 +73,8 @@ namespace ShapeTask
             {
                 return false;
             }
-            Square square = obj as Square;
-            return RealNumberUtils.IsRealEquals(square.Width, Width);
+            Circle circle = (Circle)obj;
+            return RealNumberUtils.IsRealEquals(circle.Width, Width) && RealNumberUtils.IsRealEquals(circle.Height, Height);
         }
     }
 }

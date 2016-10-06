@@ -6,17 +6,18 @@ using System.Threading.Tasks;
 
 namespace ShapeTask
 {
-    class Circle : IShape
+    class Square : IShape
     {
-        private const string shapeName = "КРУГ";
-        private const int startHash = 17;
+        private const string shapeName = "КВАДРАТ";
+        private const int startHash = 14;
 
-        public Circle(double radius)
+        public Square(double sideLength)
         {
-            Radius = radius;
+            //Я правильно понял?
+            SideLength = Math.Max(SideLength, sideLength);
         }
 
-        public double Radius
+        public double SideLength
         {
             get;
         }
@@ -25,7 +26,7 @@ namespace ShapeTask
         {
             get
             {
-                return Radius * 2;
+                return SideLength;
             }
         }
 
@@ -33,7 +34,7 @@ namespace ShapeTask
         {
             get
             {
-                return Radius * 2;
+                return SideLength;
             }
         }
 
@@ -41,7 +42,7 @@ namespace ShapeTask
         {
             get
             {
-                return Math.PI * Math.Pow(Radius, 2);
+                return Math.Pow(SideLength, 2);
             }
         }
 
@@ -49,7 +50,7 @@ namespace ShapeTask
         {
             get
             {
-                return 2 * Math.PI * Radius;
+                return 4 * SideLength;
             }
         }
 
@@ -63,7 +64,7 @@ namespace ShapeTask
         public override int GetHashCode()
         {
             int hash = startHash;
-            hash ^= Radius.GetHashCode();
+            hash ^= SideLength.GetHashCode();
             return hash ^ shapeName.GetHashCode();
         }
 
@@ -73,8 +74,8 @@ namespace ShapeTask
             {
                 return false;
             }
-            Circle circle = obj as Circle;
-            return RealNumberUtils.IsRealEquals(circle.Width, Width) && RealNumberUtils.IsRealEquals(circle.Height, Height);
+            Square square = (Square)obj;
+            return RealNumberUtils.IsRealEquals(square.Width, Width);
         }
     }
 }

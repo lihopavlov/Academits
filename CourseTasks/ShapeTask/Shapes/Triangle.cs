@@ -10,9 +10,9 @@ namespace ShapeTask
     {
         private const string shapeName = "ТРЕУГОЛЬНИК";
 
-        private double sideALength;
-        private double sideBLength;
-        private double sideCLength;
+        private readonly double sideALength;
+        private readonly double sideBLength;
+        private readonly double sideCLength;
         private const int startHash = 15;
 
         public double X1
@@ -55,18 +55,10 @@ namespace ShapeTask
             X3 = x3;
             Y3 = y3;
 
-            if (!IsSameLine(X1, Y1, X2, Y2, X3, Y3))
-            {
-                sideALength = LenghthOfSegment(X1, Y1, X2, Y2);
-                sideBLength = LenghthOfSegment(X1, Y1, X3, Y3);
-                sideCLength = LenghthOfSegment(X2, Y2, X3, Y3);
-            }
-            else
-            {
-                sideALength = 0.0;
-                sideBLength = 0.0;
-                sideCLength = 0.0;
-            }
+            sideALength = LenghthOfSegment(X1, Y1, X2, Y2);
+            sideBLength = LenghthOfSegment(X1, Y1, X3, Y3);
+            sideCLength = LenghthOfSegment(X2, Y2, X3, Y3);
+
             Perimeter = (sideALength + sideBLength + sideCLength);
         }
 
@@ -107,9 +99,13 @@ namespace ShapeTask
         {
             get
             {
-                double halfPerimeter = Perimeter / 2;
-                return Math.Sqrt(halfPerimeter * (halfPerimeter - sideALength) * (halfPerimeter - sideBLength) *
-                    (halfPerimeter - sideCLength));
+                if (!IsSameLine(X1, Y1, X2, Y2, X3, Y3))
+                {
+                    double halfPerimeter = Perimeter / 2;
+                    return Math.Sqrt(halfPerimeter * (halfPerimeter - sideALength) * (halfPerimeter - sideBLength) *
+                        (halfPerimeter - sideCLength));
+                }
+                return 0.0;
             }
         }
 
@@ -143,7 +139,7 @@ namespace ShapeTask
             {
                 return false;
             }
-            Triangle triangle = obj as Triangle;
+            Triangle triangle = (Triangle)obj;
             return RealNumberUtils.IsRealEquals(triangle.X1, X1) && RealNumberUtils.IsRealEquals(triangle.Y1, Y1) && 
                 RealNumberUtils.IsRealEquals(triangle.X2, X2) && RealNumberUtils.IsRealEquals(triangle.Y2, Y2) && 
                 RealNumberUtils.IsRealEquals(triangle.X3, X3) && RealNumberUtils.IsRealEquals(triangle.Y3, Y3);

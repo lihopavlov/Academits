@@ -64,7 +64,7 @@ namespace ShapeTask
             {
                 return false;
             }
-            Rectangle rectangle = obj as Rectangle;
+            Rectangle rectangle = (Rectangle)obj;
             return RealNumberUtils.IsRealEquals(rectangle.Width, Width) && RealNumberUtils.IsRealEquals(rectangle.Height, Height);
         }
     }
