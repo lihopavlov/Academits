@@ -14,8 +14,8 @@ namespace ShapeTask.Shapes
 
         public Rectangle(double width, double height)
         {
-            Width = width;
-            Height = height;
+            Width = Math.Max(width, 0);
+            Height = Math.Max(height, 0);
         }
 
         public double Width

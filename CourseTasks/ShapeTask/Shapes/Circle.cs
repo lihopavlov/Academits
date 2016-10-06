@@ -14,7 +14,7 @@ namespace ShapeTask.Shapes
 
         public Circle(double radius)
         {
-            Radius = radius;
+            Radius = Math.Max(radius, 0);
         }
 
         public double Radius
