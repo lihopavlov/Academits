@@ -43,11 +43,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Vector.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Range\RangeTask.csproj">
+      <Project>{2a4fa8a3-90b8-406d-b8d3-3d2abc9059bb}</Project>
+      <Name>RangeTask</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ShapeTask\ShapeTask.csproj">
+      <Project>{0d616cd7-2033-49d6-a0ed-4aa65eefa27b}</Project>
+      <Name>ShapeTask</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
