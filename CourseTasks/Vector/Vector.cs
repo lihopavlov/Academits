@@ -11,53 +11,41 @@ namespace Vector
     {
         private List<double> coordinates;
         private const double precision = 0.0001;
-        private int size;
 
         public int Size
         {
             get
             {
-                return size;
+                return coordinates.Count;
             }
         }
 
-        public Vector(int size)
+        public Vector(int size) : this(new List<double>())
         {
-            this.size = size;
-            coordinates = new List<double>();
-            for (int i = 0; i < Size; i++)
+            for (int i = 0; i < size; i++)
             {
                 coordinates.Add(0.0);
             }
         }
 
-        public Vector(Vector vector)
+        public Vector(Vector vector) : this(vector.coordinates)
         {
-            size = vector.Size;
-            coordinates = new List<double>(vector.coordinates);
         }
 
-        public Vector(List<double> coordinates)
+        public Vector(List<double> coordinates) 
         {
-            size = coordinates.Count;
             this.coordinates = new List<double>(coordinates);
         }
 
-        public Vector(int size, List<double> coordinates)
+        public Vector(int size, List<double> coordinates) : this(coordinates)
         {
             if (size <= 0)
             {
                 throw new ArgumentException();
             }
-            this.size = size;
-            this.coordinates = new List<double>();
-            for (int i = 0; i < Size; i++)
+            for (int i = 0; i < size; i++)
             {
-                if (i < coordinates.Count)
-                {
-                    this.coordinates.Add(coordinates[i]);
-                }
-                else
+                if (i >= coordinates.Count)
                 {
                     this.coordinates.Add(0.0);
                 }
@@ -90,7 +78,6 @@ namespace Vector
                     }
                 }
             }
-            size = coordinates.Count;
             return new Vector(this);
         }
 
@@ -120,7 +107,6 @@ namespace Vector
                     }
                 }
             }
-            size = coordinates.Count;
             return new Vector(this);
         }
 
@@ -135,10 +121,7 @@ namespace Vector
 
         public Vector Spread()
         {
-            for (int i = 0; i < Size; i++)
-            {
-                this[i] *= -1.0;
-            }
+            Multiplication(-1.0);
             return new Vector(this);
         }
 
@@ -177,50 +160,26 @@ namespace Vector
 
         public static Vector Addition(Vector vector1, Vector vector2)
         {
-            Vector vector1copy = new Vector(vector1);
-            Vector vector2copy = new Vector(vector2);
-            return new Vector(vector1copy.Addition(vector2copy));
+            Vector vector1Copy = new Vector(vector1);
+            Vector vector2Copy = new Vector(vector2);
+            return new Vector(vector1Copy.Addition(vector2Copy));
         }
 
         public static Vector Subtraction(Vector vector1, Vector vector2)
         {
-            Vector vector1copy = new Vector(vector1);
-            Vector vector2copy = new Vector(vector2);
-            return new Vector(vector1copy.Subtraction(vector2copy));
+            Vector vector1Copy = new Vector(vector1);
+            Vector vector2Copy = new Vector(vector2);
+            return new Vector(vector1Copy.Subtraction(vector2Copy));
         }
 
-        public static Vector Multiplication(Vector vector1, Vector vector2)
+        public static double Multiplication(Vector vector1, Vector vector2)
         {
-            List<double> coordinates = new List<double>();
-            if (vector1.Size >= vector2.Size)
+            double result = 0;
+            for (int i = 0; i < vector1.Size && i < vector2.Size; i++)
             {
-                for (int i = 0; i < vector1.Size; i++)
-                {
-                    if (i < vector2.Size)
-                    {
-                        coordinates.Add(vector1[i] * vector2[i]);
-                    }
-                    else
-                    {
-                        coordinates.Add(0.0);
-                    }
-                }
+                result += vector1[i] * vector2[i];
             }
-            else
-            {
-                for (int i = 0; i < vector2.Size; i++)
-                {
-                    if (i < vector1.Size)
-                    {
-                        coordinates.Add(vector1[i] * vector2[i]);
-                    }
-                    else
-                    {
-                        coordinates.Add(0.0);
-                    }
-                }
-            }
-            return new Vector(coordinates);
+            return result;
         }
 
 

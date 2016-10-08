@@ -35,7 +35,8 @@ namespace Vector
             }
 
             Console.Write("Сложение векторов {0} и {1}", vector1, vector2);
-            Console.WriteLine(" равно {0}", vector1.Addition(vector2));
+            vector1.Addition(vector2);
+            Console.WriteLine(" равно {0}", vector1);
             Console.Write("Сложение векторов {0} и {1}", vector2, vector3);
             Console.WriteLine(" равно {0}", vector2.Addition(vector3));
 
@@ -52,7 +53,7 @@ namespace Vector
 
             Console.WriteLine("Сложение векторов {0} и {1} равно {2}", vector1, vector2, new Vector(Vector.Addition(vector1, vector2)));
             Console.WriteLine("Вычитание векторов {0} и {1} равно {2}", vector1, vector2, new Vector(Vector.Subtraction(vector1, vector2)));
-            Console.WriteLine("Умножение векторов {0} и {1} равно {2}", vector1, vector2, new Vector(Vector.Multiplication(vector1, vector2)));
+            Console.WriteLine("Умножение векторов {0} и {1} равно {2:0.00}", vector1, vector2, Vector.Multiplication(vector1, vector2));
         }
     }
 }
