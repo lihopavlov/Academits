@@ -20,8 +20,9 @@ namespace Vector
             }
         }
 
-        public Vector(int size) : this(new List<double>())
+        public Vector(int size)
         {
+            coordinates = new List<double>();
             for (int i = 0; i < size; i++)
             {
                 coordinates.Add(0.0);
@@ -43,71 +44,48 @@ namespace Vector
             {
                 throw new ArgumentException();
             }
-            for (int i = 0; i < size; i++)
+            for (int i = coordinates.Count; i < size; i++)
             {
-                if (i >= coordinates.Count)
-                {
-                    this.coordinates.Add(0.0);
-                }
+                this.coordinates.Add(0.0);
             }
         }
 
         public Vector Addition(Vector vector)
         {
-            if (Size >= vector.Size)
+            int minSize = Math.Min(Size, vector.Size);
+            int maxSize = Math.Max(Size, vector.Size);
+            for (int i = 0; i < minSize; i++)
             {
-                for (int i = 0; i < Size; i++)
-                {
-                    if (i < vector.Size)
-                    {
-                        this[i] += vector[i];
-                    }
-                }
+                this[i] += vector[i];
             }
-            else
+            if (Size > vector.Size)
             {
-                for (int i = 0; i < vector.Size; i++)
-                {
-                    if (i < Size)
-                    {
-                        this[i] += vector[i];
-                    }
-                    else
-                    {
-                        coordinates.Add(vector[i]);
-                    }
-                }
+                return this;
             }
-            return new Vector(this);
+            for (int i = minSize; i < maxSize; i++)
+            {
+                coordinates.Add(vector[i]);
+            }
+            return this;
         }
 
         public Vector Subtraction(Vector vector)
         {
-            if (Size >= vector.Size)
+            int minSize = Math.Min(Size, vector.Size);
+            int maxSize = Math.Max(Size, vector.Size);
+            for (int i = 0; i < minSize; i++)
             {
-                for (int i = 0; i < Size; i++)
-                {
-                    if (i < vector.Size)
-                    {
-                        this[i] -= vector[i];
-                    }
-                }
+                this[i] -= vector[i];
             }
-            else
+            if (Size > vector.Size)
             {
-                for (int i = 0; i < vector.Size; i++)
-                {
-                    if (i < Size)
-                    {
-                        this[i] -= vector[i];
-                    }
-                    else
-                    {
-                        coordinates.Add(0.0 - vector[i]);
-                    }
-                }
+                return this;
             }
-            return new Vector(this);
+            for (int i = minSize; i < maxSize; i++)
+            {
+                coordinates.Add(0.0 - vector[i]);
+            }
+            return this;
         }
 
         public Vector Multiplication(double scalar)
@@ -116,13 +94,12 @@ namespace Vector
             {
                 this[i] *= scalar;
             }
-            return new Vector(this);
+            return this;
         }
 
         public Vector Spread()
         {
-            Multiplication(-1.0);
-            return new Vector(this);
+            return Multiplication(-1.0);
         }
 
         public double VectorLength
@@ -161,27 +138,25 @@ namespace Vector
         public static Vector Addition(Vector vector1, Vector vector2)
         {
             Vector vector1Copy = new Vector(vector1);
-            Vector vector2Copy = new Vector(vector2);
-            return new Vector(vector1Copy.Addition(vector2Copy));
+            return new Vector(vector1Copy.Addition(vector2));
         }
 
         public static Vector Subtraction(Vector vector1, Vector vector2)
         {
             Vector vector1Copy = new Vector(vector1);
-            Vector vector2Copy = new Vector(vector2);
-            return new Vector(vector1Copy.Subtraction(vector2Copy));
+            return new Vector(vector1Copy.Subtraction(vector2));
         }
 
         public static double Multiplication(Vector vector1, Vector vector2)
         {
             double result = 0;
-            for (int i = 0; i < vector1.Size && i < vector2.Size; i++)
+            double minSize = Math.Min(vector1.Size, vector2.Size);
+            for (int i = 0; i < minSize; i++)
             {
                 result += vector1[i] * vector2[i];
             }
             return result;
         }
-
 
         public override bool Equals(object obj)
         {
@@ -190,9 +165,13 @@ namespace Vector
                 return false;
             }
             Vector vector = (Vector)obj;
+            if (vector.Size != Size)
+            {
+                return false;
+            }
             for (int i = 0; i < Size; i++)
             {
-                if (vector.Size != Size || !RealNumberUtils.IsRealEquals(vector[i], this[i], precision))
+                if (!RealNumberUtils.IsRealEquals(vector[i], this[i], precision))
                 {
                     return false;
                 }
@@ -225,6 +204,5 @@ namespace Vector
             sb.Append("}");
             return sb.ToString();
         }
-
     }
 }

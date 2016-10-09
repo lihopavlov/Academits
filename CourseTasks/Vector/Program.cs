@@ -16,6 +16,7 @@ namespace Vector
             Vector vector2 = new Vector(new List<double> { 4.0, 8.0 });
             Vector vector3 = new Vector(new List<double> { 8.0, 1.0, 5.0, 6.0 });
             Vector vector4 = new Vector(new List<double> { 12.0, 2.0, 14.0, 11.0, 10.0, 18.0 });
+            Vector vector6 = new Vector(new List<double> { 0.5, 0.6, 0.7 });
             try
             {
                 Vector someVector = new Vector(0, new List<double> { 1.0, 2.0, 3.0 });
@@ -33,6 +34,9 @@ namespace Vector
             {
                 Console.WriteLine("Ошибка при создании объекта. Неверный размер.");
             }
+
+            Console.Write("Вычитание векторов {0} и {1}", vector1, vector6);
+            Console.WriteLine(" равно {0}", vector1.Subtraction(vector6));
 
             Console.Write("Сложение векторов {0} и {1}", vector1, vector2);
             vector1.Addition(vector2);
