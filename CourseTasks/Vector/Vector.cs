@@ -7,18 +7,10 @@ using ShapeTask.Utils;
 
 namespace Vector
 {
-    class Vector
+    public class Vector
     {
         private List<double> coordinates;
         private const double precision = 0.0001;
-
-        public int Size
-        {
-            get
-            {
-                return coordinates.Count;
-            }
-        }
 
         public Vector(int size)
         {
@@ -47,6 +39,14 @@ namespace Vector
             for (int i = coordinates.Count; i < size; i++)
             {
                 this.coordinates.Add(0.0);
+            }
+        }
+
+        public int Size
+        {
+            get
+            {
+                return coordinates.Count;
             }
         }
 
