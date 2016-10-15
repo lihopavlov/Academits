@@ -12,17 +12,28 @@ namespace Matrix
     {
         static void Main(string[] args)
         {
-            Vector vector1 = new Vector(new List<double> { 5.0, 7.0, 1.0 });
-            Vector vector2 = new Vector(new List<double> { -4.0, 1.0, 0.0 });
-            Vector vector3 = new Vector(new List<double> { 2.0, 0.0, 3.0 });
+            Matrix matrix = new Matrix(new List<List<double>>
+            {
+                new List<double> { 5.0, 7.0, 1.0 },
+                new List<double> { -4.0, 1.0, 0.0 },
+                new List<double> { 2.0, 0.0, 3.0 },
+            });
 
-            List<Vector> table = new List<Vector>();
-            table.Add(vector1);
-            table.Add(vector2);
-            table.Add(vector3);
+            Matrix matrix8 = new Matrix(new List<List<double>>
+            {
+                new List<double> { 5.0, 7.0, 1.0, 4.0, 3.0 },
+                new List<double> { -4.0, 1.0, 0.0, -1.0, 12.0 }
+            });
 
-            Matrix matrix = new Matrix(table);
-            Console.WriteLine(matrix.CalcDeterminant());
+            try
+            {
+                Console.WriteLine(matrix.CalcDeterminant());
+            }
+            catch (ArgumentException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            Console.WriteLine(matrix8.Transpose());
 
             Matrix matrix1 = new Matrix(new List<List<double>>
             {
@@ -31,6 +42,7 @@ namespace Matrix
                 new List<double> { 4.0, 7.0},
                 new List<double> { 5.0, 4.0 }
             });
+
             Matrix matrix2 = new Matrix(new List<List<double>>
             {
                 new List<double> { 1.0, 2.0, 3.0, 7.0 },
@@ -64,7 +76,15 @@ namespace Matrix
             Console.WriteLine(matrix1.Addition(matrix2));
             Console.WriteLine(matrix5.Addition(matrix4));
             Console.WriteLine(matrix3.Subtraction(matrix4));
-            Console.WriteLine(matrix3.MultiplicationToVector(new Vector(new List<double> { 1, 2, 3, 4 })));
+
+            try
+            {
+                Console.WriteLine(matrix3.MultiplicationToVector(new Vector(new List<double> {1, 2, 3, 4})));
+            }
+            catch (ArgumentException e)
+            {
+                Console.WriteLine(e.Message);
+            }
             Console.WriteLine();
 
             Matrix matrix6 = new Matrix(new List<List<double>>
@@ -78,7 +98,14 @@ namespace Matrix
                 new List<double> { 3.0, -2.0, 1.0, 2.0 },
                 new List<double> { 0.0, 1.0, 2.0, 3.0 },
             });
-            Console.WriteLine(Matrix.Multiplication(matrix6, matrix7));
+            try
+            {
+                Console.WriteLine(Matrix.Multiplication(matrix6, matrix7));
+            }
+            catch (ArgumentException e)
+            {
+                Console.WriteLine(e.Message);
+            }
 
         }
     }
