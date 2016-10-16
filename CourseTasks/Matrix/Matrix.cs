@@ -37,12 +37,12 @@ namespace Matrix
             AddZerosToLowLines();
         }
 
-        public Matrix(int width, int height)
+        public Matrix(int columnCount, int rowCount)
         {
             rows = new List<Vector>();
-            for (int i = 0; i < height; i++)
+            for (int i = 0; i < rowCount; i++)
             {
-                rows.Add(new Vector(width));
+                rows.Add(new Vector(columnCount));
             }
         }
 
@@ -62,12 +62,12 @@ namespace Matrix
             }
         }
 
-        public int Height
+        public int RowCount
         {
             get { return rows.Count; }
         }
 
-        public int Width
+        public int ColumnCount
         {
             get
             {
@@ -79,21 +79,43 @@ namespace Matrix
         {
             get
             {
-                if (i < 0 || i >= Height)
+                if (i >= RowCount)
                 {
-                    throw new ArgumentException("Ошибка. Индекс вне диапазона.");
+                    throw new ArgumentException("Ошибка. Индекс больше максимального предела.");
+                }
+                if (i < 0)
+                {
+                    throw new ArgumentException("Ошибка. Индекс меньше минимального предела.");
                 }
                 return new Vector(rows[i]);
             }
             set
             {
-                if (i < 0 || i >= Height)
+                if (i >= RowCount)
                 {
-                    throw new ArgumentException("Ошибка. Индекс вне диапазона.");
+                    throw new ArgumentException("Ошибка. Индекс больше максимального предела.");
+                }
+                if (i < 0)
+                {
+                    throw new ArgumentException("Ошибка. Индекс меньше минимального предела.");
                 }
                 rows[i] = value;
 
-                if (rows[i].Size > rows[rows.Count - 1].Size)
+                int matrixColumnCount;
+                if (i + 1 < rows.Count)
+                {
+                    matrixColumnCount = rows[i + 1].Size;
+                }
+                else if (i - 1 >= 0)
+                {
+                    matrixColumnCount = rows[i - 1].Size;
+                }
+                else
+                {
+                    matrixColumnCount = rows[i].Size;
+                }
+
+                if (rows[i].Size > matrixColumnCount)
                 {
                     for (int j = 0; j < rows.Count; j++)
                     {
@@ -101,12 +123,12 @@ namespace Matrix
                         {
                             continue;
                         }
-                        rows[j].Addition(new Vector(rows[j].Size));
+                        rows[j].Addition(new Vector(rows[i].Size));
                     }
                 }
-                else
+                else if (rows[i].Size < matrixColumnCount)
                 {
-                    rows[i].Addition(new Vector(rows[rows.Count - 1].Size));
+                    rows[i].Addition(new Vector(matrixColumnCount));
                 }
             }
         }
@@ -115,17 +137,43 @@ namespace Matrix
         {
             get
             {
-                if (i < 0 || i >= Height || j < 0 || j >= Width)
+                if (i >= RowCount)
                 {
-                    throw new ArgumentException("Ошибка. Индекс вне диапазона.");
+                    throw new ArgumentException("Ошибка. Индекс строки больше максимального предела.");
+                }
+                if (i < 0)
+                {
+                    throw new ArgumentException("Ошибка. Индекс строки меньше минимального предела.");
+                }
+
+                if (j >= ColumnCount)
+                {
+                    throw new ArgumentException("Ошибка. Индекс столбца больше максимального предела.");
+                }
+                if (j < 0)
+                {
+                    throw new ArgumentException("Ошибка. Индекс столбца меньше минимального предела.");
                 }
                 return rows[i][j];
             }
             set
             {
-                if (i < 0 || i >= Height || j < 0 || j >= Width)
+                if (i >= RowCount)
                 {
-                    throw new ArgumentException("Ошибка. Индекс вне диапазона.");
+                    throw new ArgumentException("Ошибка. Индекс строки больше максимального предела.");
+                }
+                if (i < 0)
+                {
+                    throw new ArgumentException("Ошибка. Индекс строки меньше минимального предела.");
+                }
+
+                if (j >= ColumnCount)
+                {
+                    throw new ArgumentException("Ошибка. Индекс столбца больше максимального предела.");
+                }
+                if (j < 0)
+                {
+                    throw new ArgumentException("Ошибка. Индекс столбца меньше минимального предела.");
                 }
                 rows[i][j] = value;
             }
@@ -133,21 +181,18 @@ namespace Matrix
 
         public Vector GetColumn(int index)
         {
-            if (index < 0 || index >= Width)
+            if (index >= ColumnCount)
             {
-                throw new ArgumentException("Ошибка. Индекс вне диапазона.");
+                throw new ArgumentException("Ошибка. Индекс больше максимального предела.");
+            }
+            if (index < 0)
+            {
+                throw new ArgumentException("Ошибка. Индекс меньше минимального предела.");
             }
             List<double> column = new List<double>();
-            for (int i = 0; i < Height; i++)
+            for (int i = 0; i < RowCount; i++)
             {
-                if (this[i].Size - 1 < index)
-                {
-                    column.Add(0.0);
-                }
-                else
-                {
-                    column.Add(this[i, index]);
-                }
+                column.Add(this[i, index]);
             }
             return new Vector(column);
         }
@@ -155,8 +200,8 @@ namespace Matrix
         public Matrix Transpose()
         {
             Matrix matrixCopy = new Matrix(this);
-            rows.RemoveRange(0, rows.Count);
-            for (int i = 0; i < matrixCopy.Width; i++)
+            rows.Clear();
+            for (int i = 0; i < matrixCopy.ColumnCount; i++)
             {
                 rows.Add(matrixCopy.GetColumn(i));
             }
@@ -167,27 +212,24 @@ namespace Matrix
         {
             foreach (Vector line in rows)
             {
-                for (int i = 0; i < line.Size; i++)
-                {
-                    line[i] *= scalar;
-                }
+                line.Multiplication(scalar);
             }
             return this;
         }
 
         public static Matrix Multiplication(Matrix matrix1, Matrix matrix2)
         {
-            if (matrix1.Width != matrix2.Height)
+            if (matrix1.ColumnCount != matrix2.RowCount)
             {
-                throw new ArgumentException("Ошибка. Ширина первого аргумента должна быть равна высоте второго.");
+                throw new ArgumentException("Ошибка. Число столбцов первого аргумента должна быть равно числу строк второго.");
             }
-            Matrix result = new Matrix(matrix2.Width, matrix1.Height);
-            for (int i = 0; i < matrix1.Height; i++)
+            Matrix result = new Matrix(matrix2.ColumnCount, matrix1.RowCount);
+            for (int i = 0; i < matrix1.RowCount; i++)
             {
-                for (int j = 0; j < matrix2.Width; j++)
+                for (int j = 0; j < matrix2.ColumnCount; j++)
                 {
                     double sum = 0;
-                    for (int k = 0; k < matrix2.Height; k++)
+                    for (int k = 0; k < matrix2.RowCount; k++)
                     {
                         sum += matrix1[i, k] * matrix2[k, j];
                     }
@@ -199,11 +241,11 @@ namespace Matrix
 
         private Matrix GetMatrixWithoutRowCulumn(int row, int column)
         {
-            List<List<double>> table = new List<List<double>>(Height);
-            for (int i = 0; i < Height; i++)
+            List<List<double>> table = new List<List<double>>(RowCount);
+            for (int i = 0; i < RowCount; i++)
             {
-                List<double> line = new List<double>(Width);
-                for (int j = 0; j < Width; j++)
+                List<double> line = new List<double>(ColumnCount);
+                for (int j = 0; j < ColumnCount; j++)
                 {
                     if (j == column)
                     {
@@ -227,24 +269,24 @@ namespace Matrix
 
         private static double Determinant(Matrix matrix)
         {
-            if (matrix.Width != matrix.Height)
+            if (matrix.ColumnCount != matrix.RowCount)
             {
                 throw new ArgumentException("Ошибка. Детерминант может быть рассчитан только для квадратной матрицы.");
             }
 
-            if (matrix.Height == 1)
+            if (matrix.RowCount == 1)
             {
                 return matrix[0, 0];
             }
 
-            if (matrix.Height == 2)
+            if (matrix.RowCount == 2)
             {
                 return matrix[0, 0] * matrix[1, 1] - matrix[0, 1] * matrix[1, 0];
             }
 
             int sign = 1;
             double sum = 0;
-            for (int i = 0; i < matrix.Height; i++)
+            for (int i = 0; i < matrix.RowCount; i++)
             {
                 sum += sign * matrix[i, 0] * Determinant(matrix.GetMatrixWithoutRowCulumn(i, 0));
                 sign = -sign;
@@ -252,19 +294,20 @@ namespace Matrix
             return sum;
         }
 
-        public Vector MultiplicationToVector(Vector vector)
+        public Vector Multiplication(Vector vector)
         {
-            if (Width != vector.Size)
+            if (ColumnCount != vector.Size)
             {
-                throw new ArgumentException("Ошибка. Неверная размерность вектора");
+                throw new ArgumentException("Ошибка. Неверная размерность вектора. Длина вектора должна быть равна числу" +
+                                            "столбцов матрицы");
             }
 
-            Vector result = new Vector(Height);
+            Vector result = new Vector(RowCount);
 
-            for (int i = 0; i < Height; i++)
+            for (int i = 0; i < RowCount; i++)
             {
                 double sum = 0;
-                for (int j = 0; j < Width; j++)
+                for (int j = 0; j < ColumnCount; j++)
                 {
                     sum += this[i, j] * vector[j];
                 }
@@ -276,54 +319,63 @@ namespace Matrix
 
         public Matrix Addition(Matrix matrix)
         {
-            int minHeight = Math.Min(matrix.Height, Height);
-            int maxHeight = Math.Max(matrix.Height, Height);
-            int maxWidth = Math.Max(matrix.Width, Width);
+            int minRowCount = Math.Min(matrix.RowCount, RowCount);
+            int maxRowCount = Math.Max(matrix.RowCount, RowCount);
+            int maxColumnCount = Math.Max(matrix.ColumnCount, ColumnCount);
+            
 
-            for (int i = 0; i < minHeight; i++)
+            for (int i = 0; i < minRowCount; i++)
             {
-                this[i].Addition(matrix[i]);
+                Vector rowVector = new Vector(this[i]);
+                rowVector.Addition(matrix[i]);
+                this[i] = rowVector;
             }
 
-            if (Height >= matrix.Height)
+            if (RowCount >= matrix.RowCount)
             {
-                for (int i = minHeight; i < maxHeight; i++)
+                for (int i = minRowCount; i < maxRowCount; i++)
                 {
-                    this[i].Addition(new Vector(maxWidth));
+                    Vector rowVector = new Vector(this[i]);
+                    rowVector.Addition(new Vector(maxColumnCount));
+                    this[i] = rowVector;
                 }
                 return this;
             }
 
-            for (int i = minHeight; i < maxHeight; i++)
+            for (int i = minRowCount; i < maxRowCount; i++)
             {
-                rows.Add(Vector.Addition(matrix[i], new Vector(maxWidth)));
+                rows.Add(Vector.Addition(matrix[i], new Vector(maxColumnCount)));
             }
             return this;
         }
 
         public Matrix Subtraction(Matrix matrix)
         {
-            int minHeight = Math.Min(matrix.Height, Height);
-            int maxHeight = Math.Max(matrix.Height, Height);
-            int maxWidth = Math.Max(matrix.Width, Width);
+            int minRowCount = Math.Min(matrix.RowCount, RowCount);
+            int maxRowCount = Math.Max(matrix.RowCount, RowCount);
+            int maxColumnCount = Math.Max(matrix.ColumnCount, ColumnCount);
 
-            for (int i = 0; i < minHeight; i++)
+            for (int i = 0; i < minRowCount; i++)
             {
-                this[i].Subtraction(matrix[i]);
+                Vector rowVector = new Vector(this[i]);
+                rowVector.Subtraction(matrix[i]);
+                this[i] = rowVector;
             }
 
-            if (Height >= matrix.Height)
+            if (RowCount >= matrix.RowCount)
             {
-                for (int i = minHeight; i < maxHeight; i++)
+                for (int i = minRowCount; i < maxRowCount; i++)
                 {
-                    this[i].Subtraction(new Vector(maxWidth));
+                    Vector rowVector = new Vector(this[i]);
+                    rowVector.Subtraction(new Vector(maxColumnCount));
+                    this[i] = rowVector;
                 }
                 return this;
             }
 
-            for (int i = minHeight; i < maxHeight; i++)
+            for (int i = minRowCount; i < maxRowCount; i++)
             {
-                rows.Add(Vector.Subtraction(matrix[i], new Vector(maxWidth)));
+                rows.Add(Vector.Subtraction(matrix[i], new Vector(maxColumnCount)));
             }
             return this;
         }
@@ -337,13 +389,13 @@ namespace Matrix
         public static Matrix Subtraction(Matrix matrix1, Matrix matrix2)
         {
             Matrix matrix1Copy = new Matrix(matrix1);
-            return matrix1Copy.Addition(matrix2);
+            return matrix1Copy.Subtraction(matrix2);
         }
 
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < Height; i++)
+            for (int i = 0; i < RowCount; i++)
             {
                 sb.Append(this[i])
                     .AppendLine();
@@ -358,13 +410,17 @@ namespace Matrix
                 return false;
             }
             Matrix matrix = (Matrix)obj;
-            if (matrix.Width != Width && matrix.Height != Height)
+            if (ReferenceEquals(this, matrix))
+            {
+                return true;
+            }
+            if (matrix.ColumnCount != ColumnCount || matrix.RowCount != RowCount)
             {
                 return false;
             }
-            for (int i = 0; i < Height; i++)
+            for (int i = 0; i < RowCount; i++)
             {
-                for (int j = 0; j < Width; j++)
+                for (int j = 0; j < ColumnCount; j++)
                 {
                     if (!RealNumberUtils.IsRealEquals(matrix[i, j], this[i, j], Precision))
                     {
@@ -379,7 +435,7 @@ namespace Matrix
         {
             int startHash = 32;
             int hash = startHash;
-            for (int i = 0; i < Height; i++)
+            for (int i = 0; i < RowCount; i++)
             {
                 hash ^= this[i].GetHashCode();
             }
