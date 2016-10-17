@@ -99,22 +99,9 @@ namespace Matrix
                 {
                     throw new ArgumentException("Ошибка. Индекс меньше минимального предела.");
                 }
+                int matrixColumnCount = ColumnCount;
                 rows[i] = value;
-
-                int matrixColumnCount;
-                if (i + 1 < rows.Count)
-                {
-                    matrixColumnCount = rows[i + 1].Size;
-                }
-                else if (i - 1 >= 0)
-                {
-                    matrixColumnCount = rows[i - 1].Size;
-                }
-                else
-                {
-                    matrixColumnCount = rows[i].Size;
-                }
-
+                
                 if (rows[i].Size > matrixColumnCount)
                 {
                     for (int j = 0; j < rows.Count; j++)
@@ -326,18 +313,14 @@ namespace Matrix
 
             for (int i = 0; i < minRowCount; i++)
             {
-                Vector rowVector = new Vector(this[i]);
-                rowVector.Addition(matrix[i]);
-                this[i] = rowVector;
+                this[i] = this[i].Addition(matrix[i]);
             }
 
             if (RowCount >= matrix.RowCount)
             {
                 for (int i = minRowCount; i < maxRowCount; i++)
                 {
-                    Vector rowVector = new Vector(this[i]);
-                    rowVector.Addition(new Vector(maxColumnCount));
-                    this[i] = rowVector;
+                    this[i] = this[i].Addition(new Vector(maxColumnCount));
                 }
                 return this;
             }
@@ -357,25 +340,21 @@ namespace Matrix
 
             for (int i = 0; i < minRowCount; i++)
             {
-                Vector rowVector = new Vector(this[i]);
-                rowVector.Subtraction(matrix[i]);
-                this[i] = rowVector;
+                this[i] = this[i].Subtraction(matrix[i]);
             }
 
             if (RowCount >= matrix.RowCount)
             {
                 for (int i = minRowCount; i < maxRowCount; i++)
                 {
-                    Vector rowVector = new Vector(this[i]);
-                    rowVector.Subtraction(new Vector(maxColumnCount));
-                    this[i] = rowVector;
+                    this[i] = this[i].Subtraction(new Vector(maxColumnCount));
                 }
                 return this;
             }
 
             for (int i = minRowCount; i < maxRowCount; i++)
             {
-                rows.Add(Vector.Subtraction(matrix[i], new Vector(maxColumnCount)));
+                rows.Add(Vector.Subtraction(new Vector(maxColumnCount), matrix[i]));
             }
             return this;
         }
