@@ -4,17 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CashMashine
+namespace CashMachine
 {
-    enum Operation
-    {
-        Pay = 0,
-        Add = 1
-    }
-
     class Program
     {
-        private static void CashMashineOperaton(Operation operation, CashMashine cashMashine)
+        private static void CashMachineOperaton(Operation operation, CashMachine cashMashine)
         {
             bool isCountEnterSuccess = false;
             int count = 0;
@@ -79,7 +73,7 @@ namespace CashMashine
 
         static void Main(string[] args)
         {
-            CashMashine cashMashine1 = new CashMashine(new List<Bill>
+            CashMachine cashMashine1 = new CashMachine(new List<Bill>
             {
                 new Bill(Bills.Ten, 10),
                 new Bill(Bills.Fifty, 20),
@@ -114,11 +108,11 @@ namespace CashMashine
                 }
                 if (choiceCode == 1)
                 {
-                    CashMashineOperaton(Operation.Pay, cashMashine1);
+                    CashMachineOperaton(Operation.Pay, cashMashine1);
                 }
                 else if (choiceCode == 2)
                 {
-                    CashMashineOperaton(Operation.Add, cashMashine1);
+                    CashMachineOperaton(Operation.Add, cashMashine1);
                 }
                 else if (choiceCode == 3)
                 {

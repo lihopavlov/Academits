@@ -5,22 +5,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CashMashine
+namespace CashMachine
 {
 
-    class CashMashine
+    class CashMachine
     {
         private readonly List<Bill> pool;
         private int maxBillsCapacity;
 
-        public CashMashine(int maxBillsCapacity, string location)
+        public CashMachine(int maxBillsCapacity, string location)
         {
             pool = new List<Bill>();
             this.maxBillsCapacity = maxBillsCapacity;
             Location = location;
         }
 
-        public CashMashine(List<Bill> pool, int maxBillsCapacity, string location) : this (maxBillsCapacity, location)
+        public CashMachine(List<Bill> pool, int maxBillsCapacity, string location) : this (maxBillsCapacity, location)
         {
             if (GetTotalBillCount(pool) < maxBillsCapacity)
             {
@@ -28,7 +28,7 @@ namespace CashMashine
             }
         }
 
-        public CashMashine(CashMashine cashMashine)
+        public CashMachine(CashMachine cashMashine)
         {
             this.Location = cashMashine.Location;
             this.pool = cashMashine.pool;
@@ -108,6 +108,10 @@ namespace CashMashine
         
         public void AddBill(Bills rating, int count)
         {
+            if (count < 0)
+            {
+                throw new ArgumentException("Ошибка. Количество купюр не может быть отрицательным.");
+            }
             if (count + TotalBillsCount > MaxBillsCapacity)
             {
                 pool.Add(new Bill(rating, MaxBillsCapacity - TotalBillsCount));
@@ -118,6 +122,10 @@ namespace CashMashine
         
         public Bill PayBill(Bills rating, int capacity)
         {
+            if (capacity < 0)
+            {
+                throw new ArgumentException("Ошибка. Невозможно выдать отрицательное число купюр.");
+            }
             int sum = 0;
             for (int i = 0; i < pool.Count; i++)
             {

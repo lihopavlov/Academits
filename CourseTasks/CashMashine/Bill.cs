@@ -4,20 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CashMashine
+namespace CashMachine
 {
-
-    enum Bills
-    {
-        Ten = 10,
-        Fifty = 50,
-        Hundred = 100,
-        FiveHundred = 500,
-        Thousand = 1000,
-        FiveThousand = 5000
-    }
-
-
     class Bill
     {
         public Bill(Bills rating, int count)
@@ -38,13 +26,7 @@ namespace CashMashine
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("{ ")
-                .Append(Rating)
-                .Append(", ")
-                .Append(Count)
-                .Append(" }");
-            return sb.ToString();
+            return string.Format("[ {0}, {1} ]", Rating, Count);
         }
     }
 }
