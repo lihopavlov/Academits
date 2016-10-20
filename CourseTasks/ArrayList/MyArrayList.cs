@@ -6,29 +6,26 @@ using System.Threading.Tasks;
 
 namespace MyCollections
 {
-    class MyArrayList<T> : ICollection<T>
+    class MyArrayList<T> : IList<T>
     {
         private T[] selfArray;
-        private int counter;
-        private int index;
+        private int itemsCount;
 
-        public MyArrayList(bool isReadOnly)
+        public MyArrayList()
         {
             selfArray = new T[10];
-            counter = 0;
-            index = -1;
-            IsReadOnly = isReadOnly;
+            itemsCount = 0;
         }
 
         private bool IsEnoughCapacity()
         {
-            return counter + 1 < selfArray.Length;
+            return itemsCount + 1 < selfArray.Length;
         }
 
         private void ChangeSizeSelfArray(int currentDataLength)
         {
             T[] temp = new T[(int)(currentDataLength * 3.0 / 2 + 1)];
-            for (int i = 0; i < counter; i++)
+            for (int i = 0; i < itemsCount; i++)
             {
                 temp[i] = selfArray[i];
             }
@@ -37,33 +34,46 @@ namespace MyCollections
 
         private void MoveTailToBegin(int startTailIndex)
         {
-            if (startTailIndex < 1 || startTailIndex > counter - 1)
+            if (startTailIndex < 0 || startTailIndex > itemsCount - 1)
             {
                 return;
             }
-            for (int i = startTailIndex; i < counter - 1; i++)
+            for (int i = startTailIndex; i < itemsCount - 1; i++)
             {
                 selfArray[i] = selfArray[i + 1];
             }
-            counter--;
+            itemsCount--;
+        }
+
+        private void MoveTailToEnd(int startTailIndex)
+        {
+            if (!IsEnoughCapacity())
+            {
+                ChangeSizeSelfArray(selfArray.Length);
+            }
+            for (int i = itemsCount - 1; i >= startTailIndex; i--)
+            {
+                selfArray[i + 1] = selfArray[i];
+            }
+            itemsCount++;
         }
 
         public void Add(T item)
         {
-            if (IsReadOnly)
-            {
-                return;
-            }
             if (!IsEnoughCapacity())
             {
                 ChangeSizeSelfArray(selfArray.Length);                
             }
-            selfArray[counter++] = item;
+            selfArray[itemsCount++] = item;
         }
 
         public bool Contains(T item)
         {
-            for (int i = 0; i < counter; i++)
+            if (item == null)
+            {
+                throw new ArgumentException("Невозможно выполнить поиск по null");
+            }
+            for (int i = 0; i < itemsCount; i++)
             {
                 if (selfArray[i].Equals(item))
                 {
@@ -75,15 +85,15 @@ namespace MyCollections
 
         public bool Remove(T item)
         {
-            if (IsReadOnly)
+            if (item == null)
             {
-                return false;
+                throw new ArgumentException("Невозможно выполнить поиск по null");
             }
-            if (counter * 2 < selfArray.Length)
+            if (itemsCount * 2 < selfArray.Length)
             {
-                ChangeSizeSelfArray(counter);
+                ChangeSizeSelfArray(itemsCount);
             }
-            for (int i = 0; i < counter; i++)
+            for (int i = 0; i < itemsCount; i++)
             {
                 if (selfArray[i].Equals(item))
                 {
@@ -96,21 +106,21 @@ namespace MyCollections
 
         public void Clear()
         {
-            if (IsReadOnly)
-            {
-                return;
-            }
             selfArray = new T[10];
-            counter = 0;
+            itemsCount = 0;
         }
 
         public void CopyTo(T[] array, int index)
         {
-            if (index < 0 || index > counter - 1)
+            if (array == null)
+            {
+                throw new ArgumentException("Массив не существует");
+            }
+            if (index < 0 || index > itemsCount - 1)
             {
                 throw new ArgumentException("Индекс вне диапазона");
             }
-            int minLength = Math.Min(counter - index, array.Length);
+            int minLength = Math.Min(itemsCount - index, array.Length);
             for (int i = 0; i < minLength; i++)
             {
                 array[i] = selfArray[i + index];
@@ -119,19 +129,73 @@ namespace MyCollections
 
         public int Count
         {
-            get { return counter; }
+            get { return itemsCount; }
         }
 
-        public bool IsReadOnly { get; set; }
+        public bool IsReadOnly
+        {
+            get { return false; }
+        }
+
+        public int IndexOf(T item)
+        {
+            if (item == null)
+            {
+                throw new ArgumentException("Невозможно выполнить поиск по null");
+            }
+            for (int i = 0; i < itemsCount; i++)
+            {
+                if (selfArray[i].Equals(item))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        public void Insert(int index, T item)
+        {
+            if (index < 0 || index > itemsCount - 1)
+            {
+                throw new ArgumentException("Индекс вне диапазона");
+            }
+            MoveTailToEnd(index);
+            selfArray[index] = item;
+        }
+        
+        public void RemoveAt(int index)
+        {
+            if (index < 0 || index > itemsCount - 1)
+            {
+                throw new ArgumentException("Индекс вне диапазона");
+            }
+            MoveTailToBegin(index);
+        }
+
+        public T this[int index]
+        {
+            get
+            {
+                if (index < 0 || index > itemsCount - 1)
+                {
+                    throw new ArgumentException("Индекс вне диапазона");
+                }
+                return selfArray[index];
+            }
+            set
+            {
+                if (index < 0 || index > itemsCount - 1)
+                {
+                    throw new ArgumentException("Индекс вне диапазона");
+                }
+                selfArray[index] = value;
+            }
+        }
 
         public IEnumerator<T> GetEnumerator()
         {
-            for (int i = 0; i < counter; i++)
+            for (int i = 0; i < itemsCount; i++)
             {
-                if (selfArray[i] == null)
-                {
-                    break;
-                }
                 yield return selfArray[i];
             }
         }
@@ -141,37 +205,16 @@ namespace MyCollections
             return GetEnumerator();
         }
 
-        public bool MoveNext()
-        {
-            if (index == counter - 1)
-            {
-                Reset();
-                return false;
-            }
-            index++;
-            return true;
-        }
-
-        public void Reset()
-        {
-            index = -1;
-        }
-
-        public T Current
-        {
-            get { return selfArray[index]; }
-        }
-
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("{ ");
-            for (int i = 0; i < counter; i++)
+            for (int i = 0; i < itemsCount; i++)
             {
                 sb.Append(selfArray[i])
                     .Append(", ");
             }
-            if (counter > 0)
+            if (itemsCount > 0)
             {
                 sb.Remove(sb.Length - 1 - 1, 1);
             }

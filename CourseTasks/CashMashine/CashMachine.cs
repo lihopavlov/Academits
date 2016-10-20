@@ -147,7 +147,7 @@ namespace CashMachine
                 }
             }
             throw new ArgumentException(string.Format("В банкомате недостаточно купюр номинала {0}. Выдано {1}",
-                rating, new Bill(rating, sum)));
+                rating.ToString("d"), new Bill(rating, sum)));
         }
 
         public override string ToString()
@@ -162,10 +162,13 @@ namespace CashMachine
                 .AppendLine(TotalBillsCount.ToString());
             foreach (Bills x in Enum.GetValues(typeof(Bills)))
             {
-                sb.Append("  Купюр номинала ")
-                    .Append(x)
-                    .Append(" = ")
-                    .AppendLine(GetBillCount(x).ToString());
+                if (x != Bills.Blank)
+                {
+                    sb.Append("  Купюр номинала ");
+                    sb.Append(x.ToString("d"))
+                        .Append(" = ")
+                        .AppendLine(GetBillCount(x).ToString());
+                }
             }
             sb.AppendLine("}");
             return sb.ToString();

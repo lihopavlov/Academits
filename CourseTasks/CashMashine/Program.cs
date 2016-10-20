@@ -10,31 +10,41 @@ namespace CashMachine
     {
         private static void CashMachineOperaton(Operation operation, CashMachine cashMashine)
         {
-            bool isCountEnterSuccess = false;
+            bool isBillEnterSuccess = false;
             int count = 0;
             do
             {
                 string line;
-                if (!isCountEnterSuccess)
+                Bills rating = Bills.Blank;
+                if (!isBillEnterSuccess)
                 {
-                    Console.Out.Write("Введите количество купюр (0 - выход): ");
+                    Console.Out.Write("Введите номинал купюры (10, 50, 100, 500, 1000, 5000, 0 - выход): ");
                     line = Console.In.ReadLine();
-                    try
-                    {
-                        count = Convert.ToInt32(line);
-                        isCountEnterSuccess = true;
-                    }
-                    catch (FormatException)
-                    {
-                        Console.WriteLine("Ошибка. Неверный ввод.");
-                        continue;
-                    }
-                    if (count == 0)
+                    if (line == "0")
                     {
                         break;
                     }
+                    if (Enum.TryParse(line, out rating))
+                    {
+                        if (Enum.IsDefined(typeof(Bills), rating) && rating != Bills.Blank)
+                        {
+                            isBillEnterSuccess = true;
+                        }
+                        else
+                        {
+                            Console.Out.WriteLine("Ошибка.Такой купюры не существует.");
+                            Console.Out.WriteLine();
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        Console.Out.WriteLine("Ошибка. Неверный ввод.");
+                        Console.Out.WriteLine();
+                        continue;
+                    }
                 }
-                Console.Out.Write("Введите номинал купюры (Ten, Fifty, Hundred, FiveHundred, Thousand, FiveThousand, 0 - выход): ");
+                Console.Out.Write("Введите количество купюр (0 - выход): ");
                 line = Console.In.ReadLine();
                 if (line == "0")
                 {
@@ -42,20 +52,23 @@ namespace CashMachine
                 }
                 try
                 {
-                    Bills rating = (Bills)Enum.Parse(typeof(Bills), line);
+                    count = Convert.ToInt32(line);
+                    isBillEnterSuccess = false;
                     try
                     {
                         if (operation == Operation.Pay)
                         {
+                            Console.Out.WriteLine();
                             Console.Out.WriteLine("Выдано средств {0}", cashMashine.PayBill(rating, count));
                         }
                         else if (operation == Operation.Add)
                         {
                             cashMashine.AddBill(rating, count);
+                            Console.Out.WriteLine();
                             Console.Out.WriteLine("Средства успешно добавлены.");
+                            Console.Out.WriteLine();
                             Console.Out.WriteLine("Статус банкомата = {0}", cashMashine);
                         }
-                        isCountEnterSuccess = false;
                     }
                     catch (ArgumentException e)
                     {
@@ -63,10 +76,17 @@ namespace CashMachine
                         break;
                     }
                 }
-                catch (ArgumentException)
+                catch (FormatException)
                 {
                     Console.WriteLine("Ошибка. Неверный ввод.");
+                    Console.Out.WriteLine();
                 }
+                catch (OverflowException)
+                {
+                    Console.Out.WriteLine("Слишком большое число");
+                    Console.Out.WriteLine();
+                }
+
             } while (true);
 
         }
@@ -86,6 +106,7 @@ namespace CashMachine
             
             do
             {
+                Console.Out.WriteLine();
                 Console.Out.WriteLine("Операция:");
                 Console.Out.WriteLine("1. Извлечь деньги");
                 Console.Out.WriteLine("2. Загрузить деньги");
@@ -100,6 +121,7 @@ namespace CashMachine
                 }
                 catch (FormatException)
                 {
+                    Console.Out.WriteLine();
                     Console.WriteLine("Ошибка. Неверный ввод.");
                 }
                 if (choiceCode == 4)
@@ -116,6 +138,7 @@ namespace CashMachine
                 }
                 else if (choiceCode == 3)
                 {
+                    Console.Out.WriteLine();
                     Console.Out.WriteLine("Состояние банкомата = {0}", cashMashine1);
                 }
             } while (true);

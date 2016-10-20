@@ -8,6 +8,7 @@ namespace CashMachine
 {
     enum Bills
     {
+        Blank = 0,
         Ten = 10,
         Fifty = 50,
         Hundred = 100,

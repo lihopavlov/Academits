@@ -26,7 +26,7 @@ namespace CashMachine
 
         public override string ToString()
         {
-            return string.Format("[ {0}, {1} ]", Rating, Count);
+            return string.Format("[ Номинал = {0}, Количество = {1} ]", Rating.ToString("d"), Count);
         }
     }
 }
