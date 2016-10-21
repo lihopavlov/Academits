@@ -12,25 +12,23 @@ namespace ArrayList
         public ListNode<T> NextItem { get; set; }
         public ListNode<T> PreviousItem { get; set; }
 
-        public ListNode(T value)
+        public ListNode(T value) : this(null, null)
         {
             Value = value;
-            NextItem = null;
-            PreviousItem = null;
         }
 
-        public ListNode(T value, ListNode<T> previousItem, ListNode<T> nextItem)
+        public ListNode() : this(null, null)
         {
-            Value = value;
-            NextItem = nextItem;
+        }
+
+        public ListNode(ListNode<T> previousItem, ListNode<T> nextItem)
+        {
             PreviousItem = previousItem;
+            NextItem = nextItem;
         }
 
-        public ListNode(T value, ListNode<T> previosItem)
+        public ListNode(ListNode<T> previosItem) : this(previosItem, null)
         {
-            Value = value;
-            NextItem = null;
-            PreviousItem = previosItem;
         }
     }
 }

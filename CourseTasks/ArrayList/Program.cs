@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ArrayList;
 
 namespace MyCollections
 {
@@ -163,6 +164,20 @@ namespace MyCollections
             Console.Out.WriteLine("testList = {0}", testList);
             Console.Out.WriteLine("testList.Capacity = {0}", testList.Capacity);
             Console.Out.WriteLine("testList.Count = {0}", testList.Count);
+            Console.Out.WriteLine();
+            Console.Out.WriteLine();
+            Console.Out.WriteLine("----------------LINKED-LIST-------------------------");
+            Console.Out.WriteLine();
+            Console.Out.WriteLine();
+            MyLinkedList<int> linkedList = new MyLinkedList<int>();
+            for (int i = 40; i < 51; i++)
+            {
+                linkedList.Add(i);
+            }
+            Console.Out.WriteLine("linkedList = {0}", linkedList);
+            Console.Out.WriteLine("Remove 41");
+            linkedList.Remove(50);
+            Console.Out.WriteLine("linkedList = {0}", linkedList);
         }
     }
 }
