@@ -108,6 +108,10 @@ namespace CashMachine
         
         public void AddBill(Bills rating, int count)
         {
+            if (!Enum.IsDefined(typeof(Bills), rating) || rating == Bills.Blank)
+            {
+                throw new ArgumentException("Ошибка. Заданный номинал не существует.");
+            }
             if (count < 0)
             {
                 throw new ArgumentException("Ошибка. Количество купюр не может быть отрицательным.");
@@ -122,6 +126,10 @@ namespace CashMachine
         
         public Bill PayBill(Bills rating, int capacity)
         {
+            if (!Enum.IsDefined(typeof(Bills), rating) || rating == Bills.Blank)
+            {
+                throw new ArgumentException("Ошибка. Заданный номинал не существует.");
+            }
             if (capacity < 0)
             {
                 throw new ArgumentException("Ошибка. Невозможно выдать отрицательное число купюр.");
