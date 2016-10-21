@@ -8,6 +8,9 @@ namespace MyCollections
 {
     class MyArrayList<T> : IList<T>
     {
+        private const double incrementCoeff = 1.5;
+        private const double decrementCoeff = 2.0;
+
         private T[] selfArray;
         private int itemsCount;
 
@@ -19,12 +22,18 @@ namespace MyCollections
 
         private bool IsEnoughCapacity()
         {
-            return itemsCount + 1 < selfArray.Length;
+            return itemsCount + 1 <= selfArray.Length;
         }
 
-        private void ChangeSizeSelfArray(int currentDataLength)
+        private bool IsEnoughCapacity(int additionRange)
         {
-            T[] temp = new T[(int)(currentDataLength * 3.0 / 2 + 1)];
+            return itemsCount + additionRange <= selfArray.Length;
+        }
+
+
+        private void ChangeSizeSelfArray(int currentDataLength, double incrementCoeff)
+        {
+            T[] temp = new T[(int)(currentDataLength * incrementCoeff + 1)];
             for (int i = 0; i < itemsCount; i++)
             {
                 temp[i] = selfArray[i];
@@ -49,7 +58,7 @@ namespace MyCollections
         {
             if (!IsEnoughCapacity())
             {
-                ChangeSizeSelfArray(selfArray.Length);
+                ChangeSizeSelfArray(selfArray.Length, incrementCoeff);
             }
             for (int i = itemsCount - 1; i >= startTailIndex; i--)
             {
@@ -58,11 +67,43 @@ namespace MyCollections
             itemsCount++;
         }
 
+        public virtual int Capacity
+        {
+            get { return selfArray.Length; }
+            set
+            {
+                if (value < itemsCount)
+                {
+                    throw new ArgumentException("Значение свойтсва Capacity не может быть меньше Count");
+                }
+                ChangeSizeSelfArray(value - 1, 1.0);
+            }
+        }
+
+        public virtual void AddRange(ICollection<T> c)
+        {
+            if (c == null)
+            {
+                throw new ArgumentException("Коллекция не существует");
+            }
+            if (!IsEnoughCapacity(c.Count))
+            {
+                ChangeSizeSelfArray(itemsCount + c.Count, incrementCoeff);
+            }
+            IEnumerator<T> iterator = c.GetEnumerator();
+            for (int i = itemsCount; i < itemsCount + c.Count; i++)
+            {
+                iterator.MoveNext();
+                selfArray[i] = iterator.Current;
+            }
+            itemsCount += c.Count;
+        }
+
         public void Add(T item)
         {
             if (!IsEnoughCapacity())
             {
-                ChangeSizeSelfArray(selfArray.Length);                
+                ChangeSizeSelfArray(selfArray.Length, incrementCoeff);                
             }
             selfArray[itemsCount++] = item;
         }
@@ -89,9 +130,9 @@ namespace MyCollections
             {
                 throw new ArgumentException("Невозможно выполнить поиск по null");
             }
-            if (itemsCount * 2 < selfArray.Length)
+            if (itemsCount * decrementCoeff < selfArray.Length)
             {
-                ChangeSizeSelfArray(itemsCount);
+                ChangeSizeSelfArray(itemsCount, incrementCoeff);
             }
             for (int i = 0; i < itemsCount; i++)
             {
@@ -106,7 +147,7 @@ namespace MyCollections
 
         public void Clear()
         {
-            selfArray = new T[10];
+            selfArray = new T[itemsCount];
             itemsCount = 0;
         }
 

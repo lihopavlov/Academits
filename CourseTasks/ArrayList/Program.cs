@@ -61,25 +61,26 @@ namespace MyCollections
                 testList.Add(i);
             }
             testList.Add(10);
-
+            Console.Out.WriteLine("testList.Capacity = {0}", testList.Capacity);
             Console.WriteLine(testList.ToString());
 
             for (int i = 5; i < 8; i++)
             {
                 testList.Remove(i);
             }
-
+            Console.Out.WriteLine("testList.Capacity = {0}", testList.Capacity);
             for (int i = 8; i < 9; i++)
             {
                 testList.Remove(i);
             }
-
+            Console.Out.WriteLine("testList.Capacity = {0}", testList.Capacity);
 
             //for (int i = 5; i < 145; i++)
             //{
             //    
             //}
             testList.Remove(14);
+            Console.Out.WriteLine("testList.Capacity = {0}", testList.Capacity);
             Console.WriteLine("---------------------------");
             foreach (int item in testList)
             {
@@ -133,9 +134,35 @@ namespace MyCollections
             Console.WriteLine();
 
             Console.Out.WriteLine("testList.Count = {0}", testList.Count);
-
-            testList.Clear();
+            Console.Out.WriteLine("***************************************************************");
+            Console.Out.WriteLine("testList.Capacity = {0}", testList.Capacity);
+            Console.Out.WriteLine("testList.Count = {0}", testList.Count);
+            //testList.Clear();
             Console.Out.WriteLine("testList = {0}", testList);
+            try
+            {
+                testList.Capacity = 30;
+            }
+            catch (ArgumentException e)
+            {
+                Console.Out.WriteLine("{0}", e.Message);
+            }
+            Console.Out.WriteLine("testList.Capacity = {0}", testList.Capacity);
+            Console.Out.WriteLine("testList.Count = {0}", testList.Count);
+            Console.Out.WriteLine("Add 1 element 45");
+            testList.Add(45);
+            Console.Out.WriteLine("testList.Capacity = {0}", testList.Capacity);
+            Console.Out.WriteLine("testList.Count = {0}", testList.Count);
+            MyArrayList<int> addRng = new MyArrayList<int>();
+            for (int i = 100; i < 106; i++)
+            {
+                addRng.Add(i);
+            }
+            Console.Out.WriteLine("Add Range!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            testList.AddRange(addRng);
+            Console.Out.WriteLine("testList = {0}", testList);
+            Console.Out.WriteLine("testList.Capacity = {0}", testList.Capacity);
+            Console.Out.WriteLine("testList.Count = {0}", testList.Count);
         }
     }
 }
