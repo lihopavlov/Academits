@@ -16,23 +16,46 @@ namespace CashMachine
         public CashMachine(int maxBillsCapacity, string location)
         {
             pool = new List<Bill>();
+            if (maxBillsCapacity < 0)
+            {
+                throw new ArgumentException("Ошибка создания объекта. Число купбр не может быть отрицательным.");
+            }
             this.maxBillsCapacity = maxBillsCapacity;
             Location = location;
         }
 
         public CashMachine(List<Bill> pool, int maxBillsCapacity, string location) : this (maxBillsCapacity, location)
         {
-            if (GetTotalBillCount(pool) < maxBillsCapacity)
+            if (GetTotalBillCount(pool) > maxBillsCapacity)
             {
-                this.pool = pool;
+                throw new ArgumentException("Ошибка создания объекта. Превышено допустимое количество купюр.");
             }
+            this.pool = RemoveDuplicate(pool);
         }
 
         public CashMachine(CashMachine cashMashine)
         {
-            this.Location = cashMashine.Location;
-            this.pool = cashMashine.pool;
-            this.maxBillsCapacity = cashMashine.maxBillsCapacity;
+            Location = cashMashine.Location;
+            pool = cashMashine.pool;
+            maxBillsCapacity = cashMashine.maxBillsCapacity;
+        }
+
+        private static List<Bill> RemoveDuplicate(List<Bill> pool)
+        {
+            List<Bill> result = new List<Bill>(pool);
+            for (int i = 0; i < result.Count; i++)
+            {
+                for (int j = i + 1; j < result.Count; j++)
+                {
+                    if (result[i].Rating == result[j].Rating)
+                    {
+                        result[i].Count += result[j].Count;
+                        result.RemoveAt(j);
+                        j--;
+                    }
+                }
+            }
+            return result;
         }
 
         public string Location { get; }
@@ -46,6 +69,11 @@ namespace CashMachine
                 {
                     throw new ArgumentException("Ошибка.Максимальное количество купюр не может быть меньше 0.");
                 }
+                if (TotalBillsCount > value)
+                {
+                    throw new ArgumentException("Ошибка. Невозможно установить заданное количество купюр. " +
+                                                "Банкомат уже содержит большее число купюр.");
+                }
                 maxBillsCapacity = value;
             }
         }
@@ -55,6 +83,19 @@ namespace CashMachine
             get
             {
                 return GetTotalBillCount(pool);
+            }
+        }
+
+        public decimal TotalCashVolume
+        {
+            get
+            {
+                decimal sum = 0.0m;
+                foreach (Bill bill in pool)
+                {
+                    sum += bill.Count * (int)bill.Rating;
+                }
+                return sum;
             }
         }
 
@@ -85,24 +126,16 @@ namespace CashMachine
             }
             return sum;
         }
-        
+
         public void AddBill(List<Bill> pool)
         {
-            if (TotalBillsCount + GetTotalBillCount(pool) < MaxBillsCapacity)
+            if (TotalBillsCount + GetTotalBillCount(pool) > MaxBillsCapacity)
             {
-                this.pool.AddRange(pool);
+                throw new ArgumentException("Ошибка. Превышено максимальное количество купюр. Средства не приняты.");
             }
-            else
+            foreach (Bill bill in RemoveDuplicate(pool))
             {
-                foreach (Bill bill in pool)
-                {
-                    if (bill.Count + TotalBillsCount > MaxBillsCapacity)
-                    {
-                        this.pool.Add(new Bill(bill.Rating, MaxBillsCapacity - TotalBillsCount));
-                        throw new ArgumentException("Превышено максимальное количество купюр.");
-                    }
-                    this.pool.Add(bill);
-                }
+                AddBill(bill.Rating, bill.Count);
             }
         }
         
@@ -118,8 +151,15 @@ namespace CashMachine
             }
             if (count + TotalBillsCount > MaxBillsCapacity)
             {
-                pool.Add(new Bill(rating, MaxBillsCapacity - TotalBillsCount));
-                throw new ArgumentException("Превышено максимальное количество купюр.");
+                throw new ArgumentException("Превышено максимальное количество купюр. Средства не приняты.");
+            }
+            for (int i = 0; i < pool.Count; i++)
+            {
+                if (pool[i].Rating == rating)
+                {
+                    pool[i].Count += count;
+                    return;
+                }
             }
             pool.Add(new Bill(rating, count));
         }
@@ -134,28 +174,20 @@ namespace CashMachine
             {
                 throw new ArgumentException("Ошибка. Невозможно выдать отрицательное число купюр.");
             }
-            int sum = 0;
             for (int i = 0; i < pool.Count; i++)
             {
                 if (pool[i].Rating == rating)
                 {
-                    sum += pool[i].Count;
-                    pool.Remove(pool[i]);
-                    if (sum < capacity)
+                    if (capacity > pool[i].Count)
                     {
-                        i--;
-                        continue;
+                        throw new ArgumentException(string.Format("Ошибка. В банкомате недостаточно купюр номинала {0}",
+                            rating.ToString("d")));
                     }
-                    
-                    if (sum != capacity)
-                    {
-                        pool.Add(new Bill(rating, sum - capacity));
-                    }
+                    pool[i].Count -= capacity;
                     return new Bill(rating, capacity);
                 }
             }
-            throw new ArgumentException(string.Format("В банкомате недостаточно купюр номинала {0}. Выдано {1}",
-                rating.ToString("d"), new Bill(rating, sum)));
+            return new Bill(rating, 0);
         }
 
         public override string ToString()
@@ -167,7 +199,9 @@ namespace CashMachine
                 .Append("  Максимальное количество купюр = ")
                 .AppendLine(MaxBillsCapacity.ToString())
                 .Append("  Общее количество купюр = ")
-                .AppendLine(TotalBillsCount.ToString());
+                .AppendLine(TotalBillsCount.ToString())
+                .Append("  Общее количество средств (руб.) = ")
+                .AppendLine(TotalCashVolume.ToString());
             foreach (Bills x in Enum.GetValues(typeof(Bills)))
             {
                 if (x != Bills.Blank)

@@ -8,10 +8,20 @@ namespace CashMachine
 {
     class Bill
     {
+        private int count;
+
         public Bill(Bills rating, int count)
         {
+            if (!Enum.IsDefined(typeof(Bills), rating) || rating == Bills.Blank)
+            {
+                throw new ArgumentException("Ошибка создания объекта. Заданный номинал не существует.");
+            }
+            if (count < 0)
+            {
+                throw new ArgumentException("Ошибка создания объекта. Число купюр не может быть отрицательным.");
+            }
             Rating = rating;
-            Count = count;
+            this.count = count;
         }
 
         public Bills Rating
@@ -21,7 +31,15 @@ namespace CashMachine
 
         public int Count
         {
-            get;
+            get { return count; }
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentException("Ошибка. Число купюр не может быть отрицательным.");
+                }
+                count = value;
+            }
         }
 
         public override string ToString()

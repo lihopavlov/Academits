@@ -93,15 +93,23 @@ namespace CashMachine
 
         static void Main(string[] args)
         {
-            CashMachine cashMashine1 = new CashMachine(new List<Bill>
+            CashMachine cashMashine1;
+            try
             {
-                new Bill(Bills.Ten, 10),
-                new Bill(Bills.Fifty, 20),
-                new Bill(Bills.Ten, 11),
-                new Bill(Bills.Fifty, 25),
-                new Bill(Bills.Ten, 13)
-            }, 100, "улица1 строение1");
-
+                cashMashine1 = new CashMachine(new List<Bill>
+                {
+                    new Bill(Bills.Ten, 10),
+                    new Bill(Bills.Fifty, 20),
+                    new Bill(Bills.Ten, 11),
+                    new Bill(Bills.Fifty, 25),
+                    new Bill(Bills.Ten, 13)
+                }, 100, "улица1 строение1");
+            }
+            catch (ArgumentException e)
+            {
+                Console.Out.WriteLine("{0}", e);
+                return;
+            }
             Console.Out.WriteLine("Статус банкомата = {0}", cashMashine1);
             
             do
