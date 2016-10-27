@@ -19,9 +19,17 @@ namespace MyCollections
 
             //strArray.RemoveAt(1);
 
-            foreach (string item in strArray)
+            try
             {
-                Console.Write("{0}, ", item);
+                foreach (string item in strArray)
+                {
+                    Console.Write("{0}, ", item);
+                    strArray[3] = "ffff";
+                }
+            }
+            catch (InvalidOperationException e)
+            {
+                Console.Out.WriteLine("{0}", e.Message);
             }
             Console.WriteLine();
             try
@@ -125,9 +133,18 @@ namespace MyCollections
                 Console.Write("{0}, ", item);
             }
             Console.WriteLine();
+            Console.WriteLine("----------------------COPYTO-----------------");
 
-            int[] arr = new int[10];
-            testList.CopyTo(arr, 2);
+            int[] arr = new int[9];
+            try
+            {
+                testList.CopyTo(arr, 1);
+            }
+            catch (ArgumentException e)
+            {
+                Console.Out.WriteLine("{0}", e.Message);
+            }
+            Console.WriteLine("----------------------COPYTO-RESULT-ARRAY------");
             foreach (int x in arr)
             {
                 Console.Out.Write("{0} ", x);
@@ -166,6 +183,19 @@ namespace MyCollections
             Console.Out.WriteLine("testList.Count = {0}", testList.Count);
             Console.Out.WriteLine();
             Console.Out.WriteLine();
+
+            try
+            {
+                foreach (var item in testList)
+                {
+                    Console.Out.Write("item = {0}", item);
+                    testList[2] = 100;
+                }
+            }
+            catch (InvalidOperationException e)
+            {
+                Console.Out.WriteLine("{0}", e.Message);
+            }
             Console.Out.WriteLine("----------------LINKED-LIST-------------------------");
             Console.Out.WriteLine();
             Console.Out.WriteLine();

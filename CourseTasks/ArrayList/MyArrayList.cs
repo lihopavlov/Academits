@@ -22,7 +22,7 @@ namespace MyCollections
 
         private bool IsEnoughCapacity()
         {
-            return itemsCount + 1 <= selfArray.Length;
+            return itemsCount < selfArray.Length;
         }
 
         private bool IsEnoughCapacity(int additionRange)
@@ -43,10 +43,6 @@ namespace MyCollections
 
         private void MoveTailToBegin(int startTailIndex)
         {
-            if (startTailIndex < 0 || startTailIndex > itemsCount - 1)
-            {
-                return;
-            }
             for (int i = startTailIndex; i < itemsCount - 1; i++)
             {
                 selfArray[i] = selfArray[i + 1];
@@ -90,11 +86,11 @@ namespace MyCollections
             {
                 ChangeSizeSelfArray(itemsCount + c.Count, incrementCoeff);
             }
-            IEnumerator<T> iterator = c.GetEnumerator();
-            for (int i = itemsCount; i < itemsCount + c.Count; i++)
+            int i = itemsCount;
+            foreach (T item in c)
             {
-                iterator.MoveNext();
-                selfArray[i] = iterator.Current;
+                selfArray[i] = item;
+                i++;
             }
             itemsCount += c.Count;
         }
@@ -157,12 +153,15 @@ namespace MyCollections
             {
                 throw new ArgumentException("Массив не существует");
             }
-            if (index < 0 || index > itemsCount - 1)
+            if (index < 0 || index >= itemsCount)
             {
                 throw new ArgumentException("Индекс вне диапазона");
             }
-            int minLength = Math.Min(itemsCount - index, array.Length);
-            for (int i = 0; i < minLength; i++)
+            if (array.Length < itemsCount - index)
+            {
+                throw new ArgumentException("Недостаточно длины массива");
+            }
+            for (int i = 0; i < itemsCount - index; i++)
             {
                 array[i] = selfArray[i + index];
             }
@@ -196,7 +195,7 @@ namespace MyCollections
 
         public void Insert(int index, T item)
         {
-            if (index < 0 || index > itemsCount - 1)
+            if (index < 0 || index >= itemsCount)
             {
                 throw new ArgumentException("Индекс вне диапазона");
             }
@@ -206,7 +205,7 @@ namespace MyCollections
         
         public void RemoveAt(int index)
         {
-            if (index < 0 || index > itemsCount - 1)
+            if (index < 0 || index >= itemsCount)
             {
                 throw new ArgumentException("Индекс вне диапазона");
             }
@@ -217,7 +216,7 @@ namespace MyCollections
         {
             get
             {
-                if (index < 0 || index > itemsCount - 1)
+                if (index < 0 || index >= itemsCount)
                 {
                     throw new ArgumentException("Индекс вне диапазона");
                 }
@@ -225,7 +224,7 @@ namespace MyCollections
             }
             set
             {
-                if (index < 0 || index > itemsCount - 1)
+                if (index < 0 || index >= itemsCount)
                 {
                     throw new ArgumentException("Индекс вне диапазона");
                 }
@@ -235,8 +234,25 @@ namespace MyCollections
 
         public IEnumerator<T> GetEnumerator()
         {
+            T[] oldSelfArray = new T[itemsCount];
+            CopyTo(oldSelfArray, 0);
+            int oldItemsCount = itemsCount;
             for (int i = 0; i < itemsCount; i++)
             {
+                try
+                {
+                    if (!selfArray[i].Equals(oldSelfArray[i]) || oldItemsCount != itemsCount)
+                    {
+                        throw new InvalidOperationException("Коллекция была изменена");
+                    }
+                }
+                catch (NullReferenceException)
+                {
+                    if (oldSelfArray[i] != null)
+                    {
+                        throw new InvalidOperationException("Коллекция была изменена. Передан null");
+                    }
+                }
                 yield return selfArray[i];
             }
         }
