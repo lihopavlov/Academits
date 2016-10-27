@@ -13,23 +13,18 @@ namespace CashMachine
         private readonly List<Bill> pool;
         private int maxBillsCapacity;
 
-        public CashMachine(int maxBillsCapacity, string location)
+        public CashMachine(int maxBillsCapacity, string location) : this(new List<Bill>(), maxBillsCapacity, location)
         {
-            pool = new List<Bill>();
-            if (maxBillsCapacity < 0)
-            {
-                throw new ArgumentException("Ошибка создания объекта. Число купбр не может быть отрицательным.");
-            }
-            this.maxBillsCapacity = maxBillsCapacity;
-            Location = location;
         }
 
-        public CashMachine(List<Bill> pool, int maxBillsCapacity, string location) : this (maxBillsCapacity, location)
+        public CashMachine(List<Bill> pool, int maxBillsCapacity, string location)
         {
             if (GetTotalBillCount(pool) > maxBillsCapacity)
             {
                 throw new ArgumentException("Ошибка создания объекта. Превышено допустимое количество купюр.");
             }
+            MaxBillsCapacity = maxBillsCapacity;
+            Location = location;
             this.pool = RemoveDuplicate(pool);
         }
 
@@ -120,9 +115,16 @@ namespace CashMachine
         private static int GetTotalBillCount(List<Bill> pool)
         {
             int sum = 0;
-            foreach (Bill bill in pool)
+            try
             {
-                sum += bill.Count;
+                foreach (Bill bill in pool)
+                {
+                    sum += bill.Count;
+                }
+            }
+            catch (NullReferenceException)
+            {
+                return 0;
             }
             return sum;
         }

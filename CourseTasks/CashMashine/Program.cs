@@ -94,6 +94,7 @@ namespace CashMachine
         static void Main(string[] args)
         {
             CashMachine cashMashine1;
+            CashMachine cashMashine2 = new CashMachine(100, "fff");
             try
             {
                 cashMashine1 = new CashMachine(new List<Bill>
