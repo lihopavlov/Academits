@@ -188,14 +188,33 @@ namespace MyCollections
             {
                 foreach (var item in testList)
                 {
-                    Console.Out.Write("item = {0}", item);
-                    testList[2] = 100;
+                    Console.Out.Write("{0}, ", item);
+                    testList.Add(199);
                 }
             }
             catch (InvalidOperationException e)
             {
                 Console.Out.WriteLine("{0}", e.Message);
             }
+            Console.Out.WriteLine();
+            Console.Out.WriteLine("testList.Capacity = {0}", testList.Capacity);
+            Console.Out.WriteLine("testList.Count = {0}", testList.Count);
+            Console.Out.WriteLine();
+            testList.TrimExcess();
+            Console.Out.WriteLine("-------------TRIM_EXCESS---------------");
+            Console.Out.WriteLine("testList.Capacity = {0}", testList.Capacity);
+            Console.Out.WriteLine("testList.Count = {0}", testList.Count);
+            Console.Out.WriteLine();
+            Console.Out.WriteLine("testList = {0}", testList);
+            Console.Out.WriteLine();
+            testList.Capacity = 19;
+            testList.TrimExcess();
+            Console.Out.WriteLine("-------------TRIM_EXCESS---------------");
+            Console.Out.WriteLine("testList.Capacity = {0}", testList.Capacity);
+            Console.Out.WriteLine("testList.Count = {0}", testList.Count);
+
+
+
             Console.Out.WriteLine("----------------LINKED-LIST-------------------------");
             Console.Out.WriteLine();
             Console.Out.WriteLine();

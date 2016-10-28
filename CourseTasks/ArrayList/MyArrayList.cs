@@ -8,8 +8,10 @@ namespace MyCollections
 {
     class MyArrayList<T> : IList<T>
     {
-        private const double incrementCoeff = 1.5;
-        private const double decrementCoeff = 2.0;
+        private const double IncrementCoeff = 1.5;
+        private const double DecrementCoeff = 2.0;
+        private const double CapacityThreshold = 0.9;
+        private long modificationCode;
 
         private T[] selfArray;
         private int itemsCount;
@@ -18,6 +20,23 @@ namespace MyCollections
         {
             selfArray = new T[10];
             itemsCount = 0;
+            modificationCode = 0L;
+        }
+
+        private long ModificationCode
+        {
+            get { return modificationCode; }
+            set
+            {
+                if (value + modificationCode >= long.MaxValue)
+                {
+                    modificationCode = 0L;
+                }
+                else
+                {
+                    modificationCode = value;
+                }
+            }
         }
 
         private bool IsEnoughCapacity()
@@ -54,7 +73,7 @@ namespace MyCollections
         {
             if (!IsEnoughCapacity())
             {
-                ChangeSizeSelfArray(selfArray.Length, incrementCoeff);
+                ChangeSizeSelfArray(selfArray.Length, IncrementCoeff);
             }
             for (int i = itemsCount - 1; i >= startTailIndex; i--)
             {
@@ -76,6 +95,14 @@ namespace MyCollections
             }
         }
 
+        public virtual void TrimExcess()
+        {
+            if ((double)itemsCount / Capacity < CapacityThreshold)
+            {
+                Capacity = itemsCount;
+            }
+        }
+
         public virtual void AddRange(ICollection<T> c)
         {
             if (c == null)
@@ -84,7 +111,7 @@ namespace MyCollections
             }
             if (!IsEnoughCapacity(c.Count))
             {
-                ChangeSizeSelfArray(itemsCount + c.Count, incrementCoeff);
+                ChangeSizeSelfArray(itemsCount + c.Count, IncrementCoeff);
             }
             int i = itemsCount;
             foreach (T item in c)
@@ -93,15 +120,17 @@ namespace MyCollections
                 i++;
             }
             itemsCount += c.Count;
+            ++ModificationCode;
         }
 
         public void Add(T item)
         {
             if (!IsEnoughCapacity())
             {
-                ChangeSizeSelfArray(selfArray.Length, incrementCoeff);                
+                ChangeSizeSelfArray(selfArray.Length, IncrementCoeff);                
             }
             selfArray[itemsCount++] = item;
+            ++ModificationCode;
         }
 
         public bool Contains(T item)
@@ -126,15 +155,16 @@ namespace MyCollections
             {
                 throw new ArgumentException("Невозможно выполнить поиск по null");
             }
-            if (itemsCount * decrementCoeff < selfArray.Length)
+            if (itemsCount * DecrementCoeff < selfArray.Length)
             {
-                ChangeSizeSelfArray(itemsCount, incrementCoeff);
+                ChangeSizeSelfArray(itemsCount, IncrementCoeff);
             }
             for (int i = 0; i < itemsCount; i++)
             {
                 if (selfArray[i].Equals(item))
                 {
                     MoveTailToBegin(i);
+                    ++ModificationCode;
                     return true;
                 }
             }
@@ -145,6 +175,7 @@ namespace MyCollections
         {
             selfArray = new T[itemsCount];
             itemsCount = 0;
+            ++ModificationCode;
         }
 
         public void CopyTo(T[] array, int index)
@@ -201,6 +232,7 @@ namespace MyCollections
             }
             MoveTailToEnd(index);
             selfArray[index] = item;
+            ++ModificationCode;
         }
         
         public void RemoveAt(int index)
@@ -210,6 +242,7 @@ namespace MyCollections
                 throw new ArgumentException("Индекс вне диапазона");
             }
             MoveTailToBegin(index);
+            ++ModificationCode;
         }
 
         public T this[int index]
@@ -229,29 +262,18 @@ namespace MyCollections
                     throw new ArgumentException("Индекс вне диапазона");
                 }
                 selfArray[index] = value;
+                ++ModificationCode;
             }
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            T[] oldSelfArray = new T[itemsCount];
-            CopyTo(oldSelfArray, 0);
-            int oldItemsCount = itemsCount;
+            long startModificationCode = ModificationCode;
             for (int i = 0; i < itemsCount; i++)
             {
-                try
+                if (startModificationCode != ModificationCode)
                 {
-                    if (!selfArray[i].Equals(oldSelfArray[i]) || oldItemsCount != itemsCount)
-                    {
-                        throw new InvalidOperationException("Коллекция была изменена");
-                    }
-                }
-                catch (NullReferenceException)
-                {
-                    if (oldSelfArray[i] != null)
-                    {
-                        throw new InvalidOperationException("Коллекция была изменена. Передан null");
-                    }
+                    throw new InvalidOperationException("Коллекция изменилась");
                 }
                 yield return selfArray[i];
             }
