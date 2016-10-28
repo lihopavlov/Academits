@@ -13,7 +13,15 @@ namespace CashMachine
         private readonly List<Bill> pool;
         private int maxBillsCapacity;
 
-        public CashMachine(int maxBillsCapacity, string location) : this(new List<Bill>(), maxBillsCapacity, location)
+        public CashMachine(int maxBillsCapacity, string location) : this(new List<Bill>
+                                                                        {
+                                                                            new Bill(Bills.Ten, 0),
+                                                                            new Bill(Bills.Fifty, 0),
+                                                                            new Bill(Bills.Hundred, 0),
+                                                                            new Bill(Bills.FiveHundred, 0),
+                                                                            new Bill(Bills.Thousand, 0),
+                                                                            new Bill(Bills.FiveThousand, 0)
+                                                                        }, maxBillsCapacity, location)
         {
         }
 
@@ -23,9 +31,9 @@ namespace CashMachine
             {
                 throw new ArgumentException("Ошибка создания объекта. Превышено допустимое количество купюр.");
             }
+            this.pool = RemoveDuplicate(pool);
             MaxBillsCapacity = maxBillsCapacity;
             Location = location;
-            this.pool = RemoveDuplicate(pool);
         }
 
         public CashMachine(CashMachine cashMashine)
@@ -115,16 +123,9 @@ namespace CashMachine
         private static int GetTotalBillCount(List<Bill> pool)
         {
             int sum = 0;
-            try
+            foreach (Bill bill in pool)
             {
-                foreach (Bill bill in pool)
-                {
-                    sum += bill.Count;
-                }
-            }
-            catch (NullReferenceException)
-            {
-                return 0;
+                sum += bill.Count;
             }
             return sum;
         }

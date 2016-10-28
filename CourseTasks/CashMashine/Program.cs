@@ -111,7 +111,7 @@ namespace CashMachine
                 Console.Out.WriteLine("{0}", e);
                 return;
             }
-            Console.Out.WriteLine("Статус банкомата = {0}", cashMashine1);
+            Console.Out.WriteLine("Статус банкомата = {0}", cashMashine2);
             
             do
             {
@@ -139,16 +139,16 @@ namespace CashMachine
                 }
                 if (choiceCode == 1)
                 {
-                    CashMachineOperaton(Operation.Pay, cashMashine1);
+                    CashMachineOperaton(Operation.Pay, cashMashine2);
                 }
                 else if (choiceCode == 2)
                 {
-                    CashMachineOperaton(Operation.Add, cashMashine1);
+                    CashMachineOperaton(Operation.Add, cashMashine2);
                 }
                 else if (choiceCode == 3)
                 {
                     Console.Out.WriteLine();
-                    Console.Out.WriteLine("Состояние банкомата = {0}", cashMashine1);
+                    Console.Out.WriteLine("Состояние банкомата = {0}", cashMashine2);
                 }
             } while (true);
         }
