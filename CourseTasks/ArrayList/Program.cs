@@ -212,10 +212,17 @@ namespace MyCollections
             Console.Out.WriteLine("-------------TRIM_EXCESS---------------");
             Console.Out.WriteLine("testList.Capacity = {0}", testList.Capacity);
             Console.Out.WriteLine("testList.Count = {0}", testList.Count);
+            Console.Out.WriteLine();
+            Console.Out.WriteLine();
 
-
+//-------------------------------------------------------------------------------------------------------
+//------------------------------------------------Linked_List--------------------------------------------
+//---------------------------------------------------------------------------------------------------------
 
             Console.Out.WriteLine("----------------LINKED-LIST-------------------------");
+            Console.Out.WriteLine("*****************************************************");
+            Console.Out.WriteLine("*****************************************************");
+            Console.Out.WriteLine("*****************************************************");
             Console.Out.WriteLine();
             Console.Out.WriteLine();
             MyLinkedList<int> linkedList = new MyLinkedList<int>();
@@ -224,9 +231,51 @@ namespace MyCollections
                 linkedList.Add(i);
             }
             Console.Out.WriteLine("linkedList = {0}", linkedList);
-            Console.Out.WriteLine("Remove 41");
+            Console.Out.WriteLine("linkedList.Count = {0}", linkedList.Count);
+            Console.Out.WriteLine("Remove 50");
             linkedList.Remove(50);
             Console.Out.WriteLine("linkedList = {0}", linkedList);
+            Console.Out.WriteLine("linkedList.Count = {0}", linkedList.Count);
+            //Console.Out.WriteLine("----Clear----");
+            //linkedList.Clear();
+            //Console.Out.WriteLine("linkedList = {0}", linkedList);
+            Console.Out.WriteLine();
+            Console.Out.WriteLine("-----Contains-------");
+            Console.Out.WriteLine("linkedList.Contains(40) = {0}", linkedList.Contains(45));
+            Console.Out.WriteLine();
+            Console.WriteLine("----------------------COPYTO-----------------");
+
+            int[] arr1 = new int[10];
+            try
+            {
+                linkedList.CopyTo(arr1, 1);
+            }
+            catch (ArgumentException e)
+            {
+                Console.Out.WriteLine("{0}", e.Message);
+            }
+            Console.WriteLine("----------------------COPYTO-RESULT-ARRAY------");
+            foreach (int x in arr1)
+            {
+                Console.Out.Write("{0} ", x);
+            }
+            Console.WriteLine();
+            Console.Out.WriteLine();
+            Console.WriteLine("----------------------ENUMERATOR-----------------");
+            try
+            {
+                foreach (var item in linkedList)
+                {
+                    Console.Out.Write("{0}, ", item);
+                    //linkedList.Add(199);
+                }
+            }
+            catch (InvalidOperationException e)
+            {
+                Console.Out.WriteLine("{0}", e.Message);
+            }
+            Console.Out.WriteLine();
+
         }
     }
 }
