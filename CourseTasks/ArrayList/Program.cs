@@ -275,7 +275,39 @@ namespace MyCollections
                 Console.Out.WriteLine("{0}", e.Message);
             }
             Console.Out.WriteLine();
+            Console.WriteLine("----------------------AddAfter-----------------");
+            linkedList.AddAfter(linkedList.AddAfter(linkedList.First, 121), new ListNode<int>(122, linkedList));
+            Console.Out.WriteLine();
+            Console.Out.WriteLine("linkedList = {0}", linkedList);
 
+            Console.WriteLine("----------------------AddBefore-----------------");
+            linkedList.AddBefore(linkedList.AddBefore(linkedList.Last, 123), new ListNode<int>(124, linkedList));
+            linkedList.AddAfter(linkedList.AddAfter(linkedList.Last, 125), new ListNode<int>(126, linkedList));
+            Console.Out.WriteLine();
+            Console.Out.WriteLine("linkedList = {0}", linkedList);
+            Console.Out.WriteLine("linkedList.Count = {0}", linkedList.Count);
+            Console.WriteLine("----------------------CLEAR-----------------");
+            linkedList.Clear();
+            Console.Out.WriteLine("linkedList.Count = {0}", linkedList.Count);
+            linkedList.AddFirst(160);
+            Console.Out.WriteLine("linkedList = {0}", linkedList);
+            Console.Out.WriteLine("linkedList.Count = {0}", linkedList.Count);
+            linkedList.AddFirst(new ListNode<int>(161, linkedList));
+            Console.Out.WriteLine();
+            linkedList.AddLast(162);
+            linkedList.AddLast(new ListNode<int>(163, linkedList));
+            Console.Out.WriteLine();
+            Console.Out.WriteLine("linkedList = {0}", linkedList);
+            Console.Out.WriteLine("linkedList.Count = {0}", linkedList.Count);
+            Console.WriteLine("----------------------Remove node-----------------");
+            Console.Out.WriteLine();
+            linkedList.Remove(linkedList.First);
+            Console.Out.WriteLine("linkedList = {0}", linkedList);
+            Console.Out.WriteLine("linkedList.Count = {0}", linkedList.Count);
+            linkedList.RemoveFirst();
+            linkedList.RemoveLast();
+            Console.Out.WriteLine("linkedList = {0}", linkedList);
+            Console.Out.WriteLine("linkedList.Count = {0}", linkedList.Count);
         }
     }
 }
