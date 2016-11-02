@@ -6,31 +6,43 @@ using System.Threading.Tasks;
 
 namespace ArrayList
 {
-    class ListNode<T>
+    sealed class ListNode<T>
     {
         public T Value { get; set; }
-        public ListNode<T> NextItem { get; set; }
-        public ListNode<T> PreviousItem { get; set; }
-        public MyLinkedList<T> List { get; set; }
+        internal ListNode<T> nextItem;
+        internal ListNode<T> previousItem;
+        internal MyLinkedList<T> list;
 
-        public ListNode(T value, MyLinkedList<T> list) : this(value, list, null, null)
+        public ListNode(T value) : this(value, null)
         {
         }
 
-        public ListNode(T value) : this(value, null, null, null)
-        {
-        }
-
-        public ListNode(T value, MyLinkedList<T> list, ListNode<T> previousItem, ListNode<T> nextItem)
+        internal ListNode(T value, MyLinkedList<T> list)
         {
             Value = value;
-            List = list;
-            PreviousItem = previousItem;
-            NextItem = nextItem;
+            this.list = list;
         }
 
-        public ListNode(T value, MyLinkedList<T> list, ListNode<T> previosItem) : this(value, list, previosItem, null)
+        public ListNode<T> NextItem
         {
+            get { return nextItem; }
+        }
+
+        public ListNode<T> PreviousItem
+        {
+            get { return previousItem; }
+        }
+
+        public MyLinkedList<T> List
+        {
+            get { return list; }
+        }
+
+        internal void Invalidate()
+        {
+            previousItem = null;
+            nextItem = null;
+            list = null;
         }
     }
 }

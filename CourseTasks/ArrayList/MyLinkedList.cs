@@ -43,15 +43,27 @@ namespace ArrayList
             return startNode == null;
         }
 
-        private void ValidateNode(ListNode<T> node)
+        private static void ValidateNode(ListNode<T> node, MyLinkedList<T> list)
         {
             if (node == null)
             {
                 throw new ArgumentNullException("Аргумент node равен null");
             }
-            if (node.List != this)
+            if (node.List != list)
             {
                 throw new InvalidOperationException("Аргумент node не принадлежит текущему списку");
+            }
+        }
+
+        private static void ValidateNewNode(ListNode<T> newNode)
+        {
+            if (newNode == null)
+            {
+                throw new ArgumentNullException("Аргумент newNode равен null");
+            }
+            if (newNode.list != null)
+            {
+                throw new InvalidOperationException("Аргумент newNode уже принадлежит другому списку");
             }
         }
 
@@ -65,55 +77,31 @@ namespace ArrayList
             get { return endNode; }
         }
 
-        public void Add(T item)
+        private void SelfListRemove(ListNode<T> node)
         {
             if (IsEmpty())
             {
-                startNode = new ListNode<T>(item, this);
-                endNode = startNode;
+                return;
             }
-            else
-            {
-                ListNode<T> newNode = new ListNode<T>(item, this);
-                newNode.PreviousItem = endNode;
-                endNode = newNode;
-                endNode.PreviousItem.NextItem = endNode;
-            }
-            itemsCount++;
-            ModificationCode++;
-        }
-
-        private void ClearNodeLinks(ListNode<T> node)
-        {
-            if (node != null)
-            {
-                node.NextItem = null;
-                node.PreviousItem = null;
-                node.List = null;
-            }
-        }
-
-        private void SelfListRemove(ListNode<T> node)
-        {
-            ValidateNode(node);
+            ValidateNode(node, this);
             itemsCount--;
             ModificationCode++;
             if (node.PreviousItem == null)
             {
                 startNode = node.NextItem;
-                startNode.PreviousItem = null;
+                startNode.previousItem = null;
             }
             else if (node.NextItem == null)
             {
                 endNode = node.PreviousItem;
-                endNode.NextItem = null;
+                endNode.nextItem = null;
             }
             else
             {
-                node.PreviousItem.NextItem = node.NextItem;
-                node.NextItem.PreviousItem = node.PreviousItem;
+                node.PreviousItem.nextItem = node.NextItem;
+                node.NextItem.previousItem = node.PreviousItem;
             }
-            ClearNodeLinks(node);
+            node.Invalidate();
         }
 
         public bool Remove(T item)
@@ -127,6 +115,7 @@ namespace ArrayList
                 return false;
             }
             ListNode<T> currentNode = startNode;
+            currentNode.list = this;
             while (currentNode != null)
             {
                 if (currentNode.Value.Equals(item))
@@ -145,19 +134,16 @@ namespace ArrayList
 
         public void Remove(ListNode<T> node)
         {
-            ValidateNode(node);
             SelfListRemove(node);
         }
 
         public void RemoveFirst()
         {
-            ValidateNode(startNode);
             SelfListRemove(startNode);
         }
 
         public void RemoveLast()
         {
-            ValidateNode(endNode);
             SelfListRemove(endNode);
         }
 
@@ -166,7 +152,7 @@ namespace ArrayList
             get { return itemsCount; }
         }
 
-        public bool IsReadOnly
+        bool ICollection<T>.IsReadOnly
         {
             get { return false; }
         }
@@ -182,7 +168,7 @@ namespace ArrayList
             {
                 ListNode<T> temp = currentNode;
                 currentNode = currentNode.NextItem;
-                ClearNodeLinks(temp);
+                temp.Invalidate();
             }
             startNode = null;
             endNode = null;
@@ -263,129 +249,118 @@ namespace ArrayList
             return GetEnumerator();
         }
 
-        private void SelfListAddAfter(ListNode<T> node, ListNode<T> newNode)
-        {
-            if (node.NextItem == null)
-            {
-                node.NextItem = newNode;
-                newNode.PreviousItem = node;
-                endNode = newNode;
-            }
-            else
-            {
-                newNode.NextItem = node.NextItem;
-                node.NextItem.PreviousItem = newNode;
-                node.NextItem = newNode;
-                newNode.PreviousItem = node;
-            }
-            itemsCount++;
-            ModificationCode++;
-        }
-
         public ListNode<T> AddAfter(ListNode<T> node, T item)
         {
-            ValidateNode(node);
-            ListNode<T> result = new ListNode<T>(item, this);
+            ListNode<T> result = new ListNode<T>(item);
             SelfListAddAfter(node, result);
             return result;
         }
 
         public void AddAfter(ListNode<T> node, ListNode<T> newNode)
         {
-            ValidateNode(node);
-            ValidateNode(newNode);
             SelfListAddAfter(node, newNode);
+        }
+
+        void ICollection<T>.Add(T item)
+        {
+            AddLast(item);
+        }
+
+        private void AddNodeToEmptyList(ListNode<T> newNode)
+        {
+            startNode = newNode;
+            endNode = startNode;
         }
 
         public ListNode<T> AddLast(T item)
         {
-            ListNode<T> result = new ListNode<T>(item, this);
-            if (IsEmpty())
-            {
-                startNode = result;
-                endNode = startNode;
-                itemsCount++;
-                ModificationCode++;
-                return startNode;
-            }
-            SelfListAddAfter(endNode, result);
-            return endNode;
-        }
-
-        public ListNode<T> AddLast(ListNode<T> newNode)
-        {
-            if (IsEmpty())
-            {
-                startNode = newNode;
-                endNode = startNode;
-                itemsCount++;
-                ModificationCode++;
-                return startNode;
-            }
+            ListNode<T> newNode = new ListNode<T>(item);
             SelfListAddAfter(endNode, newNode);
             return endNode;
         }
 
+        public void AddLast(ListNode<T> newNode)
+        {
+            ValidateNewNode(newNode);
+            AddLast(newNode.Value);
+        }
+
+        private void SelfListAddAfter(ListNode<T> node, ListNode<T> newNode)
+        {
+            ValidateNewNode(newNode);
+            newNode.list = this;
+            itemsCount++;
+            ModificationCode++;
+            if (IsEmpty())
+            {
+                AddNodeToEmptyList(newNode);
+                return;
+            }
+            ValidateNode(node, this);
+            if (node.NextItem == null)
+            {
+                node.nextItem = newNode;
+                newNode.previousItem = node;
+                endNode = newNode;
+            }
+            else
+            {
+                newNode.nextItem = node.NextItem;
+                node.NextItem.previousItem = newNode;
+                node.nextItem = newNode;
+                newNode.previousItem = node;
+            }
+        }
+
+
         private void SelfListAddBefore(ListNode<T> node, ListNode<T> newNode)
         {
+            ValidateNewNode(newNode);
+            newNode.list = this;
+            itemsCount++;
+            ModificationCode++;
+            if (IsEmpty())
+            {
+                AddNodeToEmptyList(newNode);
+                return;
+            }
+            ValidateNode(node, this);
             if (node.PreviousItem == null)
             {
-                newNode.NextItem = node;
-                node.PreviousItem = newNode;
+                newNode.nextItem = node;
+                node.previousItem = newNode;
                 startNode = newNode;
             }
             else
             {
-                node.PreviousItem.NextItem = newNode;
-                newNode.PreviousItem = node.PreviousItem;
-                newNode.NextItem = node;
-                node.PreviousItem = newNode;
+                node.PreviousItem.nextItem = newNode;
+                newNode.previousItem = node.PreviousItem;
+                newNode.nextItem = node;
+                node.previousItem = newNode;
             }
-            itemsCount++;
-            ModificationCode++;
         }
 
         public ListNode<T> AddBefore(ListNode<T> node, T item)
         {
-            ValidateNode(node);
-            ListNode<T> result = new ListNode<T>(item, this);
+            ListNode<T> result = new ListNode<T>(item);
             SelfListAddBefore(node, result);
             return result;
         }
 
         public void AddBefore(ListNode<T> node, ListNode<T> newNode)
         {
-            ValidateNode(node);
-            ValidateNode(newNode);
             SelfListAddBefore(node, newNode);
         }
 
         public ListNode<T> AddFirst(T item)
         {
-            ListNode<T> result = new ListNode<T>(item, this);
-            if (IsEmpty())
-            {
-                startNode = result;
-                endNode = startNode;
-                itemsCount++;
-                ModificationCode++;
-                return startNode;
-            }
+            ListNode<T> result = new ListNode<T>(item);
             SelfListAddBefore(startNode, result);
-            return startNode;
+            return result;
         }
 
         public void AddFirst(ListNode<T> newNode)
         {
-            ValidateNode(newNode);
-            if (IsEmpty())
-            {
-                startNode = newNode;
-                endNode = startNode;
-                itemsCount++;
-                ModificationCode++;
-                return;
-            }
             SelfListAddBefore(startNode, newNode);
         }
 
