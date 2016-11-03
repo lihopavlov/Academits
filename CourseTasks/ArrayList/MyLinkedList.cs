@@ -125,7 +125,6 @@ namespace ArrayList
             }
             if (currentNode != null)
             {
-                currentNode.List = this;
                 SelfListRemove(currentNode);
                 return true;
             }
@@ -198,31 +197,26 @@ namespace ArrayList
 
         public void CopyTo(T[] array, int index)
         {
-            if (array == null)
-            {
-                throw new ArgumentException("Массив не существует");
-            }
-            if (index < 0 || index >= Count)
-            {
-                throw new ArgumentException("Индекс вне диапазона");
-            }
-            if (array.Length < Count - index)
-            {
-                throw new ArgumentException("Недостаточно длины массива");
-            }
             if (IsEmpty())
             {
                 return;
             }
-            ListNode<T> currentNode = First;
-            int startIndex = 0;
-            while (currentNode != null)
+            if (array == null)
             {
-                if (startIndex >= index)
-                {
-                    array[startIndex - index] = currentNode.Value;
-                }
-                currentNode = currentNode.NextItem;
+                throw new ArgumentException("Массив не существует");
+            }
+            if (index < 0 || index >= array.Length)
+            {
+                throw new ArgumentException("Индекс вне диапазона");
+            }
+            if (array.Length - index < Count)
+            {
+                throw new ArgumentException("Недостаточно длины массива");
+            }
+            int startIndex = index;
+            foreach (T x in this)
+            {
+                array[startIndex] = x;
                 startIndex++;
             }
         }
@@ -247,8 +241,8 @@ namespace ArrayList
 
         public ListNode<T> AddAfter(ListNode<T> node, T item)
         {
-            ListNode<T> result = new ListNode<T>(item);
             ValidateNode(node);
+            ListNode<T> result = new ListNode<T>(item);
             SelfListAddAfter(node, result);
             return result;
         }
@@ -339,8 +333,8 @@ namespace ArrayList
 
         public ListNode<T> AddBefore(ListNode<T> node, T item)
         {
-            ListNode<T> result = new ListNode<T>(item);
             ValidateNode(node);
+            ListNode<T> result = new ListNode<T>(item);
             SelfListAddBefore(node, result);
             return result;
         }

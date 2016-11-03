@@ -245,10 +245,10 @@ namespace MyCollections
             Console.Out.WriteLine();
             Console.WriteLine("----------------------COPYTO-----------------");
 
-            int[] arr1 = new int[10];
+            int[] arr1 = new int[12];
             try
             {
-                linkedList.CopyTo(arr1, 1);
+                linkedList.CopyTo(arr1, 2);
             }
             catch (ArgumentException e)
             {
@@ -260,139 +260,139 @@ namespace MyCollections
                 Console.Out.Write("{0} ", x);
             }
             Console.WriteLine();
-            Console.Out.WriteLine();
-            Console.WriteLine("----------------------ENUMERATOR-----------------");
-            try
-            {
-                foreach (var item in linkedList)
-                {
-                    Console.Out.Write("{0}, ", item);
-                    //linkedList.Add(199);
-                }
-            }
-            catch (InvalidOperationException e)
-            {
-                Console.Out.WriteLine("{0}", e.Message);
-            }
-            Console.Out.WriteLine();
-            Console.WriteLine("----------------------AddAfter-----------------");
-            linkedList.AddAfter(linkedList.AddAfter(linkedList.First, 121), new ListNode<int>(122, null));
-            Console.Out.WriteLine();
-            Console.Out.WriteLine("linkedList = {0}", linkedList);
+            //Console.Out.WriteLine();
+            //Console.WriteLine("----------------------ENUMERATOR-----------------");
+            //try
+            //{
+            //    foreach (var item in linkedList)
+            //    {
+            //        Console.Out.Write("{0}, ", item);
+            //        //linkedList.Add(199);
+            //    }
+            //}
+            //catch (InvalidOperationException e)
+            //{
+            //    Console.Out.WriteLine("{0}", e.Message);
+            //}
+            //Console.Out.WriteLine();
+            //Console.WriteLine("----------------------AddAfter-----------------");
+            //linkedList.AddAfter(linkedList.AddAfter(linkedList.First, 121), new ListNode<int>(122, null));
+            //Console.Out.WriteLine();
+            //Console.Out.WriteLine("linkedList = {0}", linkedList);
 
-            Console.WriteLine("----------------------AddBefore-----------------");
-            linkedList.AddBefore(linkedList.AddBefore(linkedList.Last, 123), new ListNode<int>(124, null));
-            linkedList.AddAfter(linkedList.AddAfter(linkedList.Last, 125), new ListNode<int>(126, null));
-            Console.Out.WriteLine();
-            Console.Out.WriteLine("linkedList = {0}", linkedList);
-            Console.Out.WriteLine("linkedList.Count = {0}", linkedList.Count);
-            Console.WriteLine("----------------------CLEAR-----------------");
-            linkedList.Clear();
-            Console.Out.WriteLine("linkedList.Count = {0}", linkedList.Count);
-            linkedList.AddFirst(160);
-            Console.Out.WriteLine("linkedList = {0}", linkedList);
-            Console.Out.WriteLine("linkedList.Count = {0}", linkedList.Count);
-            linkedList.AddFirst(new ListNode<int>(161, null));
-            Console.Out.WriteLine();
-            linkedList.AddLast(162);
-            linkedList.AddLast(new ListNode<int>(163, null));
-            Console.Out.WriteLine();
-            Console.Out.WriteLine("linkedList = {0}", linkedList);
-            Console.Out.WriteLine("linkedList.Count = {0}", linkedList.Count);
-            Console.WriteLine("----------------------Remove node-----------------");
-            Console.Out.WriteLine();
-            linkedList.Remove(linkedList.First);
-            Console.Out.WriteLine("linkedList = {0}", linkedList);
-            Console.Out.WriteLine("linkedList.Count = {0}", linkedList.Count);
-            linkedList.RemoveFirst();
-            linkedList.RemoveLast();
-            Console.Out.WriteLine("linkedList = {0}", linkedList);
-            Console.Out.WriteLine("linkedList.Count = {0}", linkedList.Count);
-
-
-            //----------------------------------------------------------------------------------
-            //----------------------------------------------------------------------------------
-            //----------------------------------------------------------------------------------
-            Console.Out.WriteLine("----------------LINKED-LIST-------------------------");
-            Console.Out.WriteLine("*****************************************************");
-            Console.Out.WriteLine("*****************************************************");
-            Console.Out.WriteLine("*****************************************************");
-            Console.Out.WriteLine();
-            Console.Out.WriteLine();
-            MyLinkedList<string> stringList = new MyLinkedList<string>();
-            for (int i = 40; i < 51; i++)
-            {
-                stringList.AddFirst("str" + i);
-            }
-            Console.Out.WriteLine("stringList = {0}", stringList);
-            Console.Out.WriteLine("stringList.Count = {0}", stringList.Count);
-            stringList.AddAfter(stringList.First, (string)null);
-            stringList.AddAfter(stringList.First, (string)null);
-            stringList.AddAfter(stringList.First, (string)null);
-            Console.Out.WriteLine("stringList = {0}", stringList);
-            Console.Out.WriteLine("stringList.Count = {0}", stringList.Count);
-            Console.Out.WriteLine("stringList.First = {0}", stringList.First);
-            Console.Out.WriteLine("stringList.Last = {0}", stringList.Last);
-            Console.Out.WriteLine();
-            Console.Out.WriteLine("             REMOVE            ");
-            Console.Out.WriteLine();
-
-            stringList.Remove((string)null);
-            Console.Out.WriteLine("stringList.Contains(null) = {0}", stringList.Contains(null));
-            stringList.Remove((string)null);
-            stringList.Remove((string)null);
-            stringList.Remove((string)null);
-            stringList.Remove((string)null);
-            Console.Out.WriteLine("stringList.Contains(null) = {0}", stringList.Contains(null));
-
-            stringList.RemoveFirst();
-            stringList.RemoveFirst();
-            stringList.RemoveFirst();
-            stringList.RemoveFirst();
-            stringList.RemoveFirst();
-            stringList.RemoveFirst();
-            stringList.RemoveFirst();
-            stringList.RemoveFirst();
-            stringList.RemoveFirst();
-            stringList.RemoveFirst();
-            stringList.RemoveFirst();
-
-            //stringList.AddAfter(stringList.First, "string1");
-            //stringList.AddAfter(null, "string1");
+            //Console.WriteLine("----------------------AddBefore-----------------");
+            //linkedList.AddBefore(linkedList.AddBefore(linkedList.Last, 123), new ListNode<int>(124, null));
+            //linkedList.AddAfter(linkedList.AddAfter(linkedList.Last, 125), new ListNode<int>(126, null));
+            //Console.Out.WriteLine();
+            //Console.Out.WriteLine("linkedList = {0}", linkedList);
+            //Console.Out.WriteLine("linkedList.Count = {0}", linkedList.Count);
+            //Console.WriteLine("----------------------CLEAR-----------------");
+            //linkedList.Clear();
+            //Console.Out.WriteLine("linkedList.Count = {0}", linkedList.Count);
+            //linkedList.AddFirst(160);
+            //Console.Out.WriteLine("linkedList = {0}", linkedList);
+            //Console.Out.WriteLine("linkedList.Count = {0}", linkedList.Count);
+            //linkedList.AddFirst(new ListNode<int>(161, null));
+            //Console.Out.WriteLine();
+            //linkedList.AddLast(162);
+            //linkedList.AddLast(new ListNode<int>(163, null));
+            //Console.Out.WriteLine();
+            //Console.Out.WriteLine("linkedList = {0}", linkedList);
+            //Console.Out.WriteLine("linkedList.Count = {0}", linkedList.Count);
+            //Console.WriteLine("----------------------Remove node-----------------");
+            //Console.Out.WriteLine();
+            //linkedList.Remove(linkedList.First);
+            //Console.Out.WriteLine("linkedList = {0}", linkedList);
+            //Console.Out.WriteLine("linkedList.Count = {0}", linkedList.Count);
+            //linkedList.RemoveFirst();
+            //linkedList.RemoveLast();
+            //Console.Out.WriteLine("linkedList = {0}", linkedList);
+            //Console.Out.WriteLine("linkedList.Count = {0}", linkedList.Count);
 
 
-            Console.Out.WriteLine("stringList = {0}", stringList);
-            Console.Out.WriteLine("stringList.Count = {0}", stringList.Count);
-            Console.Out.WriteLine("stringList.First = {0}", stringList.First);
-            Console.Out.WriteLine("stringList.Last = {0}", stringList.Last);
-
-            //stringList.Remove(stringList.First.NextItem);
-            //stringList.Remove(stringList.First.NextItem);
-            //stringList.Remove(stringList.First.NextItem);
-            //stringList.Remove(stringList.First.NextItem);
-            //stringList.Remove(stringList.First.NextItem);
-            //stringList.Remove(stringList.First.NextItem);
-            //stringList.Remove(stringList.First.NextItem);
+            ////----------------------------------------------------------------------------------
+            ////----------------------------------------------------------------------------------
+            ////----------------------------------------------------------------------------------
+            //Console.Out.WriteLine("----------------LINKED-LIST-------------------------");
+            //Console.Out.WriteLine("*****************************************************");
+            //Console.Out.WriteLine("*****************************************************");
+            //Console.Out.WriteLine("*****************************************************");
+            //Console.Out.WriteLine();
+            //Console.Out.WriteLine();
+            //MyLinkedList<string> stringList = new MyLinkedList<string>();
+            //for (int i = 40; i < 51; i++)
+            //{
+            //    stringList.AddFirst("str" + i);
+            //}
             //Console.Out.WriteLine("stringList = {0}", stringList);
             //Console.Out.WriteLine("stringList.Count = {0}", stringList.Count);
-            //stringList.Clear();
-            //stringList.Remove("ddd");
+            //stringList.AddAfter(stringList.First, (string)null);
+            //stringList.AddAfter(stringList.First, (string)null);
+            //stringList.AddAfter(stringList.First, (string)null);
+            //Console.Out.WriteLine("stringList = {0}", stringList);
+            //Console.Out.WriteLine("stringList.Count = {0}", stringList.Count);
+            //Console.Out.WriteLine("stringList.First = {0}", stringList.First);
+            //Console.Out.WriteLine("stringList.Last = {0}", stringList.Last);
+            //Console.Out.WriteLine();
+            //Console.Out.WriteLine("             REMOVE            ");
+            //Console.Out.WriteLine();
+
+            //stringList.Remove((string)null);
+            //Console.Out.WriteLine("stringList.Contains(null) = {0}", stringList.Contains(null));
+            //stringList.Remove((string)null);
+            //stringList.Remove((string)null);
+            //stringList.Remove((string)null);
+            //stringList.Remove((string)null);
+            //Console.Out.WriteLine("stringList.Contains(null) = {0}", stringList.Contains(null));
+
             //stringList.RemoveFirst();
-            //stringList.RemoveLast();
-            //Console.Out.WriteLine("stringList contains sss = {0}", stringList.Contains("ssss"));
+            //stringList.RemoveFirst();
+            //stringList.RemoveFirst();
+            //stringList.RemoveFirst();
+            //stringList.RemoveFirst();
+            //stringList.RemoveFirst();
+            //stringList.RemoveFirst();
+            //stringList.RemoveFirst();
+            //stringList.RemoveFirst();
+            //stringList.RemoveFirst();
+            //stringList.RemoveFirst();
+
+            ////stringList.AddAfter(stringList.First, "string1");
+            ////stringList.AddAfter(null, "string1");
+
+
             //Console.Out.WriteLine("stringList = {0}", stringList);
             //Console.Out.WriteLine("stringList.Count = {0}", stringList.Count);
-            //stringList.AddAfter(stringList.First, "string1");
-            //stringList.AddAfter(stringList.First, "string2");
-            //stringList.AddAfter(stringList.First, "string3");
-            //stringList.AddAfter(stringList.First, "string4");
-            //stringList.AddAfter(stringList.First, "string5");
-            //stringList.AddAfter(stringList.First, "string6");
-            //stringList.AddFirst("begin");
-            //stringList.AddLast("end");
-            //stringList.Remove("string3");
-            //Console.Out.WriteLine("stringList = {0}", stringList);
-            //Console.Out.WriteLine("stringList.Count = {0}", stringList.Count);
+            //Console.Out.WriteLine("stringList.First = {0}", stringList.First);
+            //Console.Out.WriteLine("stringList.Last = {0}", stringList.Last);
+
+            ////stringList.Remove(stringList.First.NextItem);
+            ////stringList.Remove(stringList.First.NextItem);
+            ////stringList.Remove(stringList.First.NextItem);
+            ////stringList.Remove(stringList.First.NextItem);
+            ////stringList.Remove(stringList.First.NextItem);
+            ////stringList.Remove(stringList.First.NextItem);
+            ////stringList.Remove(stringList.First.NextItem);
+            ////Console.Out.WriteLine("stringList = {0}", stringList);
+            ////Console.Out.WriteLine("stringList.Count = {0}", stringList.Count);
+            ////stringList.Clear();
+            ////stringList.Remove("ddd");
+            ////stringList.RemoveFirst();
+            ////stringList.RemoveLast();
+            ////Console.Out.WriteLine("stringList contains sss = {0}", stringList.Contains("ssss"));
+            ////Console.Out.WriteLine("stringList = {0}", stringList);
+            ////Console.Out.WriteLine("stringList.Count = {0}", stringList.Count);
+            ////stringList.AddAfter(stringList.First, "string1");
+            ////stringList.AddAfter(stringList.First, "string2");
+            ////stringList.AddAfter(stringList.First, "string3");
+            ////stringList.AddAfter(stringList.First, "string4");
+            ////stringList.AddAfter(stringList.First, "string5");
+            ////stringList.AddAfter(stringList.First, "string6");
+            ////stringList.AddFirst("begin");
+            ////stringList.AddLast("end");
+            ////stringList.Remove("string3");
+            ////Console.Out.WriteLine("stringList = {0}", stringList);
+            ////Console.Out.WriteLine("stringList.Count = {0}", stringList.Count);
 
         }
     }
