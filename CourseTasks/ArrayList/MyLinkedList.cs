@@ -197,10 +197,6 @@ namespace ArrayList
 
         public void CopyTo(T[] array, int index)
         {
-            if (IsEmpty())
-            {
-                return;
-            }
             if (array == null)
             {
                 throw new ArgumentException("Массив не существует");
@@ -212,6 +208,10 @@ namespace ArrayList
             if (array.Length - index < Count)
             {
                 throw new ArgumentException("Недостаточно длины массива");
+            }
+            if (IsEmpty())
+            {
+                return;
             }
             int startIndex = index;
             foreach (T x in this)
