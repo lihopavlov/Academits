@@ -288,7 +288,6 @@ namespace ArrayList
                 AddNodeToEmptyList(newNode);
                 return;
             }
-            ValidateNode(node);
             if (node.NextItem == null)
             {
                 node.NextItem = newNode;
@@ -315,7 +314,6 @@ namespace ArrayList
                 AddNodeToEmptyList(newNode);
                 return;
             }
-            
             if (node.PreviousItem == null)
             {
                 newNode.NextItem = node;
