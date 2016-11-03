@@ -9,9 +9,6 @@ namespace ArrayList
     sealed class ListNode<T>
     {
         public T Value { get; set; }
-        internal ListNode<T> nextItem;
-        internal ListNode<T> previousItem;
-        internal MyLinkedList<T> list;
 
         public ListNode(T value) : this(value, null)
         {
@@ -20,29 +17,27 @@ namespace ArrayList
         internal ListNode(T value, MyLinkedList<T> list)
         {
             Value = value;
-            this.list = list;
+            List = list;
         }
 
         public ListNode<T> NextItem
         {
-            get { return nextItem; }
-        }
+            get; internal set; }
 
-        public ListNode<T> PreviousItem
-        {
-            get { return previousItem; }
-        }
+        public ListNode<T> PreviousItem { get; internal set; }
 
-        public MyLinkedList<T> List
-        {
-            get { return list; }
-        }
+        public MyLinkedList<T> List { get; internal set; }
 
         internal void Invalidate()
         {
-            previousItem = null;
-            nextItem = null;
-            list = null;
+            PreviousItem = null;
+            NextItem = null;
+            List = null;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("[ {0} ]", Value);
         }
     }
 }

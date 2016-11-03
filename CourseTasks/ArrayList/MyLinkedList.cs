@@ -9,18 +9,17 @@ namespace ArrayList
 {
     class MyLinkedList<T> : ICollection<T>
     {
-        private ListNode<T> startNode;
-        private ListNode<T> endNode;
-        private int itemsCount;
         private long modificationCode;
 
         public MyLinkedList()
         {
-            startNode = null;
-            endNode = null;
-            itemsCount = 0;
+            First = null;
+            Last = null;
+            Count = 0;
             modificationCode = 0L;
         }
+
+
 
         private long ModificationCode
         {
@@ -40,16 +39,16 @@ namespace ArrayList
 
         private bool IsEmpty()
         {
-            return startNode == null;
+            return First == null;
         }
 
-        private static void ValidateNode(ListNode<T> node, MyLinkedList<T> list)
+        private void ValidateNode(ListNode<T> node)
         {
             if (node == null)
             {
                 throw new ArgumentNullException("Аргумент node равен null");
             }
-            if (node.List != list)
+            if (node.List != this)
             {
                 throw new InvalidOperationException("Аргумент node не принадлежит текущему списку");
             }
@@ -61,21 +60,15 @@ namespace ArrayList
             {
                 throw new ArgumentNullException("Аргумент newNode равен null");
             }
-            if (newNode.list != null)
+            if (newNode.List != null)
             {
-                throw new InvalidOperationException("Аргумент newNode уже принадлежит другому списку");
+                throw new InvalidOperationException("Аргумент newNode принадлежит некоторому списку");
             }
         }
 
-        public ListNode<T> First
-        {
-            get { return startNode; }
-        }
+        public ListNode<T> First { get; private set; }
 
-        public ListNode<T> Last
-        {
-            get { return endNode; }
-        }
+        public ListNode<T> Last { get; private set; }
 
         private void SelfListRemove(ListNode<T> node)
         {
@@ -83,49 +76,56 @@ namespace ArrayList
             {
                 return;
             }
-            ValidateNode(node, this);
-            itemsCount--;
+            ValidateNode(node);
+            Count--;
             ModificationCode++;
-            if (node.PreviousItem == null)
+            if (node.PreviousItem == null && node.NextItem == null)
             {
-                startNode = node.NextItem;
-                startNode.previousItem = null;
+                First = null;
+                Last = null;
+            }
+            else if (node.PreviousItem == null)
+            {
+                First = node.NextItem;
+                First.PreviousItem = null;
             }
             else if (node.NextItem == null)
             {
-                endNode = node.PreviousItem;
-                endNode.nextItem = null;
+                Last = node.PreviousItem;
+                Last.NextItem = null;
             }
             else
             {
-                node.PreviousItem.nextItem = node.NextItem;
-                node.NextItem.previousItem = node.PreviousItem;
+                node.PreviousItem.NextItem = node.NextItem;
+                node.NextItem.PreviousItem = node.PreviousItem;
             }
             node.Invalidate();
         }
 
         public bool Remove(T item)
         {
-            if (item == null)
-            {
-                throw new ArgumentException("Невозможно выполнить поиск по null");
-            }
             if (IsEmpty())
             {
                 return false;
             }
-            ListNode<T> currentNode = startNode;
-            currentNode.list = this;
-            while (currentNode != null)
+            ListNode<T> currentNode = First;
+            for (; currentNode != null; currentNode = currentNode.NextItem)
             {
-                if (currentNode.Value.Equals(item))
+                if (currentNode.Value != null  )
+                {
+                    if (currentNode.Value.Equals(item))
+                    {
+                        break;
+                    }
+                }
+                else if (item == null)
                 {
                     break;
                 }
-                currentNode = currentNode.NextItem;
             }
             if (currentNode != null)
             {
+                currentNode.List = this;
                 SelfListRemove(currentNode);
                 return true;
             }
@@ -139,18 +139,15 @@ namespace ArrayList
 
         public void RemoveFirst()
         {
-            SelfListRemove(startNode);
+            SelfListRemove(First);
         }
 
         public void RemoveLast()
         {
-            SelfListRemove(endNode);
+            SelfListRemove(Last);
         }
 
-        public int Count
-        {
-            get { return itemsCount; }
-        }
+        public int Count { get; private set; }
 
         bool ICollection<T>.IsReadOnly
         {
@@ -163,37 +160,38 @@ namespace ArrayList
             {
                 return;
             }
-            ListNode<T> currentNode = startNode;
+            ListNode<T> currentNode = First;
             while (currentNode != null)
             {
                 ListNode<T> temp = currentNode;
                 currentNode = currentNode.NextItem;
                 temp.Invalidate();
             }
-            startNode = null;
-            endNode = null;
-            itemsCount = 0;
+            First = null;
+            Last = null;
+            Count = 0;
             ModificationCode++;
         }
 
         public bool Contains(T item)
         {
-            if (item == null)
-            {
-                throw new ArgumentException("Невозможно выполнить поиск по null");
-            }
             if (IsEmpty())
             {
                 return false;
             }
-            ListNode<T> currentNode = startNode;
-            while (currentNode != null)
+            foreach (T x in this)
             {
-                if (currentNode.Value.Equals(item))
+                if (x != null)
+                {
+                    if (x.Equals(item))
+                    {
+                        return true;
+                    }
+                }
+                else if (item == null)
                 {
                     return true;
                 }
-                currentNode = currentNode.NextItem;
             }
             return false;
         }
@@ -204,11 +202,11 @@ namespace ArrayList
             {
                 throw new ArgumentException("Массив не существует");
             }
-            if (index < 0 || index >= itemsCount)
+            if (index < 0 || index >= Count)
             {
                 throw new ArgumentException("Индекс вне диапазона");
             }
-            if (array.Length < itemsCount - index)
+            if (array.Length < Count - index)
             {
                 throw new ArgumentException("Недостаточно длины массива");
             }
@@ -216,7 +214,7 @@ namespace ArrayList
             {
                 return;
             }
-            ListNode<T> currentNode = startNode;
+            ListNode<T> currentNode = First;
             int startIndex = 0;
             while (currentNode != null)
             {
@@ -232,15 +230,13 @@ namespace ArrayList
         public IEnumerator<T> GetEnumerator()
         {
             long startModificationCode = ModificationCode;
-            ListNode<T> currentNode = startNode;
-            while (currentNode != null)
+            for (ListNode<T> currentNode = First; currentNode != null; currentNode = currentNode.NextItem)
             {
                 if (startModificationCode != ModificationCode)
                 {
                     throw new InvalidOperationException("Коллекция изменилась");
                 }
                 yield return currentNode.Value;
-                currentNode = currentNode.NextItem;
             }
         }
 
@@ -268,15 +264,15 @@ namespace ArrayList
 
         private void AddNodeToEmptyList(ListNode<T> newNode)
         {
-            startNode = newNode;
-            endNode = startNode;
+            First = newNode;
+            Last = First;
         }
 
         public ListNode<T> AddLast(T item)
         {
             ListNode<T> newNode = new ListNode<T>(item);
-            SelfListAddAfter(endNode, newNode);
-            return endNode;
+            SelfListAddAfter(Last, newNode);
+            return Last;
         }
 
         public void AddLast(ListNode<T> newNode)
@@ -288,55 +284,54 @@ namespace ArrayList
         private void SelfListAddAfter(ListNode<T> node, ListNode<T> newNode)
         {
             ValidateNewNode(newNode);
-            newNode.list = this;
-            itemsCount++;
+            newNode.List = this;
+            Count++;
             ModificationCode++;
             if (IsEmpty())
             {
                 AddNodeToEmptyList(newNode);
                 return;
             }
-            ValidateNode(node, this);
+            ValidateNode(node);
             if (node.NextItem == null)
             {
-                node.nextItem = newNode;
-                newNode.previousItem = node;
-                endNode = newNode;
+                node.NextItem = newNode;
+                newNode.PreviousItem = node;
+                Last = newNode;
             }
             else
             {
-                newNode.nextItem = node.NextItem;
-                node.NextItem.previousItem = newNode;
-                node.nextItem = newNode;
-                newNode.previousItem = node;
+                newNode.NextItem = node.NextItem;
+                node.NextItem.PreviousItem = newNode;
+                node.NextItem = newNode;
+                newNode.PreviousItem = node;
             }
         }
-
 
         private void SelfListAddBefore(ListNode<T> node, ListNode<T> newNode)
         {
             ValidateNewNode(newNode);
-            newNode.list = this;
-            itemsCount++;
+            newNode.List = this;
+            Count++;
             ModificationCode++;
             if (IsEmpty())
             {
                 AddNodeToEmptyList(newNode);
                 return;
             }
-            ValidateNode(node, this);
+            ValidateNode(node);
             if (node.PreviousItem == null)
             {
-                newNode.nextItem = node;
-                node.previousItem = newNode;
-                startNode = newNode;
+                newNode.NextItem = node;
+                node.PreviousItem = newNode;
+                First = newNode;
             }
             else
             {
-                node.PreviousItem.nextItem = newNode;
-                newNode.previousItem = node.PreviousItem;
-                newNode.nextItem = node;
-                node.previousItem = newNode;
+                node.PreviousItem.NextItem = newNode;
+                newNode.PreviousItem = node.PreviousItem;
+                newNode.NextItem = node;
+                node.PreviousItem = newNode;
             }
         }
 
@@ -355,19 +350,19 @@ namespace ArrayList
         public ListNode<T> AddFirst(T item)
         {
             ListNode<T> result = new ListNode<T>(item);
-            SelfListAddBefore(startNode, result);
+            SelfListAddBefore(First, result);
             return result;
         }
 
         public void AddFirst(ListNode<T> newNode)
         {
-            SelfListAddBefore(startNode, newNode);
+            SelfListAddBefore(First, newNode);
         }
 
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            ListNode<T> currentNode = startNode;
+            ListNode<T> currentNode = First;
             sb.Append("{ ");
             while (currentNode != null)
             {
@@ -375,7 +370,7 @@ namespace ArrayList
                     .Append(", ");
                 currentNode = currentNode.NextItem;
             }
-            if (itemsCount > 0)
+            if (Count > 0)
             {
                 sb.Remove(sb.Length - 1 - 1, 1);
             }

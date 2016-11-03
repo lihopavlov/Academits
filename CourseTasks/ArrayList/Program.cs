@@ -331,34 +331,69 @@ namespace MyCollections
             stringList.AddAfter(stringList.First, (string)null);
             Console.Out.WriteLine("stringList = {0}", stringList);
             Console.Out.WriteLine("stringList.Count = {0}", stringList.Count);
-            stringList.Remove(stringList.First.NextItem);
-            stringList.Remove(stringList.First.NextItem);
-            stringList.Remove(stringList.First.NextItem);
-            stringList.Remove(stringList.First.NextItem);
-            stringList.Remove(stringList.First.NextItem);
-            stringList.Remove(stringList.First.NextItem);
-            stringList.Remove(stringList.First.NextItem);
-            Console.Out.WriteLine("stringList = {0}", stringList);
-            Console.Out.WriteLine("stringList.Count = {0}", stringList.Count);
-            stringList.Clear();
-            stringList.Remove("ddd");
+            Console.Out.WriteLine("stringList.First = {0}", stringList.First);
+            Console.Out.WriteLine("stringList.Last = {0}", stringList.Last);
+            Console.Out.WriteLine();
+            Console.Out.WriteLine("             REMOVE            ");
+            Console.Out.WriteLine();
+
+            stringList.Remove((string)null);
+            Console.Out.WriteLine("stringList.Contains(null) = {0}", stringList.Contains(null));
+            stringList.Remove((string)null);
+            stringList.Remove((string)null);
+            stringList.Remove((string)null);
+            stringList.Remove((string)null);
+            Console.Out.WriteLine("stringList.Contains(null) = {0}", stringList.Contains(null));
+
             stringList.RemoveFirst();
-            stringList.RemoveLast();
-            Console.Out.WriteLine("stringList contains sss = {0}", stringList.Contains("ssss"));
-            Console.Out.WriteLine("stringList = {0}", stringList);
-            Console.Out.WriteLine("stringList.Count = {0}", stringList.Count);
+            stringList.RemoveFirst();
+            stringList.RemoveFirst();
+            stringList.RemoveFirst();
+            stringList.RemoveFirst();
+            stringList.RemoveFirst();
+            stringList.RemoveFirst();
+            stringList.RemoveFirst();
+            stringList.RemoveFirst();
+            stringList.RemoveFirst();
+            stringList.RemoveFirst();
+
             stringList.AddAfter(stringList.First, "string1");
-            stringList.AddAfter(stringList.First, "string2");
-            stringList.AddAfter(stringList.First, "string3");
-            stringList.AddAfter(stringList.First, "string4");
-            stringList.AddAfter(stringList.First, "string5");
-            stringList.AddAfter(stringList.First, "string6");
-            stringList.AddFirst("begin");
-            stringList.AddLast("end");
-            stringList.Remove("string3");
+            //stringList.AddAfter(null, "string1");
+
+
             Console.Out.WriteLine("stringList = {0}", stringList);
             Console.Out.WriteLine("stringList.Count = {0}", stringList.Count);
-            
+            Console.Out.WriteLine("stringList.First = {0}", stringList.First);
+            Console.Out.WriteLine("stringList.Last = {0}", stringList.Last);
+
+            //stringList.Remove(stringList.First.NextItem);
+            //stringList.Remove(stringList.First.NextItem);
+            //stringList.Remove(stringList.First.NextItem);
+            //stringList.Remove(stringList.First.NextItem);
+            //stringList.Remove(stringList.First.NextItem);
+            //stringList.Remove(stringList.First.NextItem);
+            //stringList.Remove(stringList.First.NextItem);
+            //Console.Out.WriteLine("stringList = {0}", stringList);
+            //Console.Out.WriteLine("stringList.Count = {0}", stringList.Count);
+            //stringList.Clear();
+            //stringList.Remove("ddd");
+            //stringList.RemoveFirst();
+            //stringList.RemoveLast();
+            //Console.Out.WriteLine("stringList contains sss = {0}", stringList.Contains("ssss"));
+            //Console.Out.WriteLine("stringList = {0}", stringList);
+            //Console.Out.WriteLine("stringList.Count = {0}", stringList.Count);
+            //stringList.AddAfter(stringList.First, "string1");
+            //stringList.AddAfter(stringList.First, "string2");
+            //stringList.AddAfter(stringList.First, "string3");
+            //stringList.AddAfter(stringList.First, "string4");
+            //stringList.AddAfter(stringList.First, "string5");
+            //stringList.AddAfter(stringList.First, "string6");
+            //stringList.AddFirst("begin");
+            //stringList.AddLast("end");
+            //stringList.Remove("string3");
+            //Console.Out.WriteLine("stringList = {0}", stringList);
+            //Console.Out.WriteLine("stringList.Count = {0}", stringList.Count);
+
         }
     }
 }
