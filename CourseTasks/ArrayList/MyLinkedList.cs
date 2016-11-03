@@ -248,12 +248,14 @@ namespace ArrayList
         public ListNode<T> AddAfter(ListNode<T> node, T item)
         {
             ListNode<T> result = new ListNode<T>(item);
+            ValidateNode(node);
             SelfListAddAfter(node, result);
             return result;
         }
 
         public void AddAfter(ListNode<T> node, ListNode<T> newNode)
         {
+            ValidateNode(node);
             SelfListAddAfter(node, newNode);
         }
 
@@ -319,7 +321,7 @@ namespace ArrayList
                 AddNodeToEmptyList(newNode);
                 return;
             }
-            ValidateNode(node);
+            
             if (node.PreviousItem == null)
             {
                 newNode.NextItem = node;
@@ -338,12 +340,14 @@ namespace ArrayList
         public ListNode<T> AddBefore(ListNode<T> node, T item)
         {
             ListNode<T> result = new ListNode<T>(item);
+            ValidateNode(node);
             SelfListAddBefore(node, result);
             return result;
         }
 
         public void AddBefore(ListNode<T> node, ListNode<T> newNode)
         {
+            ValidateNode(node);
             SelfListAddBefore(node, newNode);
         }
 

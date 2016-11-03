@@ -357,7 +357,7 @@ namespace MyCollections
             stringList.RemoveFirst();
             stringList.RemoveFirst();
 
-            stringList.AddAfter(stringList.First, "string1");
+            //stringList.AddAfter(stringList.First, "string1");
             //stringList.AddAfter(null, "string1");
 
 
