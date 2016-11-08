@@ -19,8 +19,6 @@ namespace ArrayList
             modificationCode = 0L;
         }
 
-
-
         private long ModificationCode
         {
             get { return modificationCode; }

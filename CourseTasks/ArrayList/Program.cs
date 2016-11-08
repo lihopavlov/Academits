@@ -393,6 +393,47 @@ namespace MyCollections
             ////stringList.Remove("string3");
             ////Console.Out.WriteLine("stringList = {0}", stringList);
             ////Console.Out.WriteLine("stringList.Count = {0}", stringList.Count);
+            Console.Out.WriteLine("---------------------------------------------------------------------------");
+            Console.Out.WriteLine("---------------------------------------------------------------------------");
+            Console.Out.WriteLine("-------------------------------HASHTABLE--------------------------------");
+            HashTable<string> htTest = new HashTable<string>();
+
+            for (int i = 0; i < 15; i++)
+            {
+                htTest.Add("d" + i);
+            }
+
+            htTest.Remove("d0");
+            htTest.Remove("d1");
+            htTest.Remove("d2");
+            htTest.Remove("d3");
+            htTest.Remove("d4");
+
+            htTest.Add("d0");
+            htTest.Add("d1");
+            htTest.Add("d2");
+            htTest.Add("d3");
+            htTest.Add("d4");
+            htTest.Add("d4");
+
+            htTest.Add(null);
+            htTest.Add(null);
+
+            Console.Out.WriteLine("htTest.Contains(d4) = {0}", htTest.Contains("d4"));
+            Console.Out.WriteLine("htTest.Contains(null) = {0}", htTest.Contains(null));
+            Console.Out.WriteLine("htTest.Contains(d44) = {0}", htTest.Contains("d44"));
+
+            
+
+            string[] arr25 = new string[25];
+            htTest.CopyTo(arr25, 5);
+
+            foreach (string x in arr25)
+            {
+                Console.Out.Write("x = {0} ", x);
+            }
+
+            Console.Out.WriteLine("htTest = {0}", htTest);
 
         }
     }
