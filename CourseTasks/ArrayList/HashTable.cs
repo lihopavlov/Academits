@@ -51,7 +51,7 @@ namespace ArrayList
         private static int InternalArrayAdd(T item, List<T>[] internalArray)
         {
             var internalArrayIndex = GetInternalHashCode(item, internalArray.Length);
-            List<T> currentList = internalArray[internalArrayIndex];
+            var currentList = internalArray[internalArrayIndex];
             if (currentList == null)
             {
                 internalArray[internalArrayIndex] = new List<T> { item };
@@ -63,7 +63,7 @@ namespace ArrayList
 
         private void ResizeInternalArray()
         {
-            List<T>[] tempInternalArray = new List<T>[Math.Min((int)(internalArray.Length * InternalArrayIncreaseFactor), int.MaxValue)];
+            var tempInternalArray = new List<T>[Math.Min((int)(internalArray.Length * InternalArrayIncreaseFactor), int.MaxValue)];
             foreach (var item in this)
             {
                 InternalArrayAdd(item, tempInternalArray);
@@ -92,22 +92,12 @@ namespace ArrayList
         public bool Contains(T item)
         {
             var internalArrayIndex = GetInternalHashCode(item, internalArray.Length);
-            List<T> currentList = internalArray[internalArrayIndex];
-            foreach (var x in currentList)
+            var currentList = internalArray[internalArrayIndex];
+            if (currentList == null)
             {
-                if (x != null)
-                {
-                    if (item != null && item.GetHashCode() == x.GetHashCode() && x.Equals(item))
-                    {
-                        return true;
-                    }
-                }
-                else if (item == null)
-                {
-                    return true;
-                }
+                return false;
             }
-            return false;
+            return currentList.Contains(item);
         }
 
         public void CopyTo(T[] array, int index)
@@ -135,33 +125,23 @@ namespace ArrayList
         public bool Remove(T item)
         {
             var internalArrayIndex = GetInternalHashCode(item, internalArray.Length);
-            List<T> currentList = internalArray[internalArrayIndex];
-            foreach (var x in currentList)
+            var currentList = internalArray[internalArrayIndex];
+            if (currentList == null)
             {
-                if (x != null)
-                {
-                    if (item != null && item.GetHashCode() == x.GetHashCode() && x.Equals(item))
-                    {
-                        currentList.Remove(x);
-                        Count--;
-                        ModificationCode++;
-                        return true;
-                    }
-                }
-                else if (item == null)
-                {
-                    currentList.Remove(x);
-                    Count--;
-                    ModificationCode++;
-                    return true;
-                }
+                return false;
+            }
+            if (currentList.Remove(item))
+            {
+                Count--;
+                ModificationCode++;
+                return true;
             }
             return false;
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            long startModificationCode = ModificationCode;
+            var startModificationCode = ModificationCode;
             for (var i = 0; i < internalArray.Length; i++)
             {
                 if (internalArray[i] == null)
@@ -193,7 +173,7 @@ namespace ArrayList
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.Append("{ ");
             foreach (var item in this)
             {

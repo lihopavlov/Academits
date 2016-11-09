@@ -398,20 +398,42 @@ namespace MyCollections
             Console.Out.WriteLine("-------------------------------HASHTABLE--------------------------------");
             HashTable<string> htTest = new HashTable<string>();
 
+            foreach (var x in htTest)
+            {
+                Console.WriteLine("{0} ", x);
+            }
+
+            Console.WriteLine("htTest.Contains(d4) {0}", htTest.Contains("d4"));
+            Console.WriteLine("htTest.Contains(null) {0}", htTest.Contains("null"));
+            Console.WriteLine("htTest.Remove(d4) {0}", htTest.Remove("d4"));
+            Console.WriteLine("htTest.Remove(null) {0}", htTest.Remove("null"));
+
             for (int i = 0; i < 15; i++)
             {
                 htTest.Add("d" + i);
             }
 
+            Console.WriteLine("htTest.Contains(d4) {0}", htTest.Contains("d4"));
+            Console.WriteLine("htTest.Contains(null) {0}", htTest.Contains(null));
+            Console.WriteLine("htTest.Remove(d4) {0}", htTest.Remove("d4"));
+            Console.WriteLine("htTest.Remove(null) {0}", htTest.Remove(null));
+
             Console.Out.WriteLine();
             Console.Out.WriteLine("htTest = {0}", htTest);
             Console.Out.WriteLine("htTest.Count = {0}", htTest.Count);
 
-            htTest.Remove("d0");
-            htTest.Remove("d1");
-            htTest.Remove("d2");
-            htTest.Remove("d3");
-            htTest.Remove("d4");
+            Console.Out.WriteLine();
+            Console.WriteLine("htTest.Remove(d4) {0}", htTest.Remove("d4"));
+            Console.WriteLine("htTest.Remove(d3) {0}", htTest.Remove("d3"));
+            Console.WriteLine("htTest.Remove(d2) {0}", htTest.Remove("d2"));
+            Console.WriteLine("htTest.Remove(d1) {0}", htTest.Remove("d1"));
+            Console.WriteLine("htTest.Remove(d0) {0}", htTest.Remove("d0"));
+            Console.WriteLine("htTest.Remove(d4) {0}", htTest.Remove("d4"));
+            Console.WriteLine("htTest.Remove(d3) {0}", htTest.Remove("d3"));
+            Console.WriteLine("htTest.Remove(d2) {0}", htTest.Remove("d2"));
+            Console.WriteLine("htTest.Remove(d1) {0}", htTest.Remove("d1"));
+            Console.WriteLine("htTest.Remove(d0) {0}", htTest.Remove("d0"));
+
 
             Console.Out.WriteLine();
             Console.Out.WriteLine("htTest = {0}", htTest);
@@ -424,8 +446,22 @@ namespace MyCollections
             htTest.Add("d4");
             htTest.Add("d4");
 
+            Console.WriteLine();
+            Console.WriteLine("Remove dddd {0}", htTest.Remove("dddd"));
+            Console.WriteLine("Remove d4 {0}", htTest.Remove("d4"));
+
             htTest.Add(null);
             htTest.Add(null);
+
+            Console.WriteLine();
+            Console.Out.WriteLine("htTest = {0}", htTest);
+            Console.Out.WriteLine("htTest.Count = {0}", htTest.Count);
+            Console.WriteLine();
+            Console.WriteLine("htTest.Contains(d4) {0}", htTest.Contains("d4"));
+            Console.WriteLine("htTest.Contains(null) {0}", htTest.Contains(null));
+            Console.WriteLine("htTest.Remove(d4) {0}", htTest.Remove("d4"));
+            Console.WriteLine("htTest.Remove(null) {0}", htTest.Remove(null));
+
 
             Console.Out.WriteLine();
             Console.Out.WriteLine("htTest = {0}", htTest);
@@ -438,7 +474,7 @@ namespace MyCollections
 
             Console.Out.WriteLine("htTest.Count = {0}", htTest.Count);
 
-            string[] arr25 = new string[25];
+            string[] arr25 = new string[35];
             htTest.CopyTo(arr25, 5);
 
             foreach (string x in arr25)
