@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace ArrayList
 {
-    class HashTable<T> : ICollection<T>
+    public class HashTable<T> : ICollection<T>
     {
-        private const int SelfArrayCollisionsTreshold = 5;
-        private const double SelfArrayIncreaseFactor = 1.35;
-        private const int InitSizeSelfArray = 15;
+        private const int InternalArrayCollisionsTreshold = 5;
+        private const double InternalArrayIncreaseFactor = 1.35;
+        private const int InitSizeInternalArray = 15;
         private long modificationCode;
 
-        private List<T>[] selfArray;
+        private List<T>[] internalArray;
 
         public HashTable()
         {
-            selfArray = new List<T>[InitSizeSelfArray];
+            internalArray = new List<T>[InitSizeInternalArray];
             Count = 0;
             modificationCode = 0L;
         }
@@ -39,78 +39,60 @@ namespace ArrayList
             }
         }
 
-        private static int GetSelfHashCode(T item)
+        private static int GetInternalHashCode(T item, int arrayLength)
         {
             if (item == null)
             {
                 return 0;
             }
-            return Math.Abs(item.GetHashCode());
+            return Math.Abs(item.GetHashCode()) % arrayLength;
         }
 
-        private static int SelfArrayAdd(T item, List<T>[] selfArray)
+        private static int InternalArrayAdd(T item, List<T>[] internalArray)
         {
-            int hashCode = GetSelfHashCode(item);
-            int selfArrayIndex = hashCode % selfArray.Length;
-            List<T> currentList = selfArray[selfArrayIndex];
+            var internalArrayIndex = GetInternalHashCode(item, internalArray.Length);
+            List<T> currentList = internalArray[internalArrayIndex];
             if (currentList == null)
             {
-                selfArray[selfArrayIndex] = new List<T> { item };
+                internalArray[internalArrayIndex] = new List<T> { item };
                 return 1;
-            }
-            foreach (T x in currentList)
-            {
-                if (x != null)
-                {
-                    if (item != null && item.GetHashCode() == x.GetHashCode() && x.Equals(item))
-                    {
-                        return 0;
-                    }
-                }
-                else if (item == null)
-                {
-                    return 0;
-                }
             }
             currentList.Add(item);
             return currentList.Count;
         }
 
-        private void ResizeSelfArray()
+        private void ResizeInternalArray()
         {
-            List<T>[] tempSelfArray = new List<T>[Math.Min((int)(selfArray.Length * SelfArrayIncreaseFactor), int.MaxValue)];
+            List<T>[] tempInternalArray = new List<T>[Math.Min((int)(internalArray.Length * InternalArrayIncreaseFactor), int.MaxValue)];
             foreach (var item in this)
             {
-                SelfArrayAdd(item, tempSelfArray);
+                InternalArrayAdd(item, tempInternalArray);
             }
-            selfArray = tempSelfArray;
+            internalArray = tempInternalArray;
         }
 
         public void Add(T item)
         {
-            int selfArrayAddResult = SelfArrayAdd(item, selfArray);
-            if (selfArrayAddResult > 0)
+            ModificationCode++;
+            Count++;
+            var internalArrayAddResult = InternalArrayAdd(item, internalArray);
+            if (internalArrayAddResult > InternalArrayCollisionsTreshold)
             {
-                ModificationCode++;
-                Count++;
-                if (selfArrayAddResult > SelfArrayCollisionsTreshold)
-                {
-                    ResizeSelfArray();
-                }
+                ResizeInternalArray();
             }
         }
 
         public void Clear()
         {
-            selfArray = new List<T>[selfArray.Length];
+            internalArray = new List<T>[internalArray.Length];
             Count = 0;
             ModificationCode++;
         }
 
         public bool Contains(T item)
         {
-            int selfArrayIndex = GetSelfHashCode(item) % selfArray.Length;
-            List<T> currentList = selfArray[selfArrayIndex];
+            var internalArrayIndex = GetInternalHashCode(item, internalArray.Length);
+            List<T> currentList = internalArray[internalArrayIndex];
             foreach (var x in currentList)
             {
                 if (x != null)
@@ -142,7 +124,7 @@ namespace ArrayList
             {
                 throw new ArgumentException("Недостаточно длины массива");
             }
-            int startIndex = index;
+            var startIndex = index;
             foreach (T x in this)
             {
                 array[startIndex] = x;
@@ -152,8 +134,8 @@ namespace ArrayList
 
         public bool Remove(T item)
         {
-            int selfArrayIndex = GetSelfHashCode(item) % selfArray.Length;
-            List<T> currentList = selfArray[selfArrayIndex];
+            var internalArrayIndex = GetInternalHashCode(item, internalArray.Length);
+            List<T> currentList = internalArray[internalArrayIndex];
             foreach (var x in currentList)
             {
                 if (x != null)
@@ -180,13 +162,13 @@ namespace ArrayList
         public IEnumerator<T> GetEnumerator()
         {
             long startModificationCode = ModificationCode;
-            for (int i = 0; i < selfArray.Length; i++)
+            for (var i = 0; i < internalArray.Length; i++)
             {
-                if (selfArray[i] == null)
+                if (internalArray[i] == null)
                 {
                     continue;
                 }
-                foreach (var x in selfArray[i])
+                foreach (var x in internalArray[i])
                 {
                     if (startModificationCode != ModificationCode)
                     {

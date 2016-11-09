@@ -403,11 +403,19 @@ namespace MyCollections
                 htTest.Add("d" + i);
             }
 
+            Console.Out.WriteLine();
+            Console.Out.WriteLine("htTest = {0}", htTest);
+            Console.Out.WriteLine("htTest.Count = {0}", htTest.Count);
+
             htTest.Remove("d0");
             htTest.Remove("d1");
             htTest.Remove("d2");
             htTest.Remove("d3");
             htTest.Remove("d4");
+
+            Console.Out.WriteLine();
+            Console.Out.WriteLine("htTest = {0}", htTest);
+            Console.Out.WriteLine("htTest.Count = {0}", htTest.Count);
 
             htTest.Add("d0");
             htTest.Add("d1");
@@ -419,11 +427,16 @@ namespace MyCollections
             htTest.Add(null);
             htTest.Add(null);
 
+            Console.Out.WriteLine();
+            Console.Out.WriteLine("htTest = {0}", htTest);
+            Console.Out.WriteLine("htTest.Count = {0}", htTest.Count);
+            Console.Out.WriteLine();
+
             Console.Out.WriteLine("htTest.Contains(d4) = {0}", htTest.Contains("d4"));
             Console.Out.WriteLine("htTest.Contains(null) = {0}", htTest.Contains(null));
             Console.Out.WriteLine("htTest.Contains(d44) = {0}", htTest.Contains("d44"));
 
-            
+            Console.Out.WriteLine("htTest.Count = {0}", htTest.Count);
 
             string[] arr25 = new string[25];
             htTest.CopyTo(arr25, 5);
